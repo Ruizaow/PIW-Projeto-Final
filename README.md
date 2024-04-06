@@ -1,6 +1,6 @@
 # Site de Filmes
 
-Um site feito para registrar, avaliar e criar lista de filmes vistos pelo usuário.
+Um site feito para registrar, avaliar e criar listas de filmes vistos pelo usuário.
 
 ## Membros da equipe
 
