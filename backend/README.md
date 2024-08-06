@@ -20,7 +20,7 @@ npm install reflect-metadata --save
 npm install sqlite3 --save
 ```
 
-Arquivos .hbs
+Arquivos .hbs:
 ```
 npm install express-handlebars
 ```
