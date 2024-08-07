@@ -1,7 +1,6 @@
 import 'reflect-metadata';
 import { AppDataSource } from './data-source';
 import { User } from './entity/User';
-
 import express from 'express';
 import { engine } from 'express-handlebars';
 import path from 'path';
@@ -29,28 +28,27 @@ async function main() {
     })
 
     app.post('/users', async (req, res) => {
-        const doesUserExists = await userData.findOneBy({ id: req.body.id })
+        const thisUserAlreadyExists = await userData.findOneBy({ id: req.body.id });
 
-        if(doesUserExists == null) {
-            if(emailRegex.test(req.body.email) && req.body.password.length >= 8) {
-                console.log(req.body);
-                await userData.save(req.body);
+        if(thisUserAlreadyExists) {
+            return res.status(404).send("Usuário já existe.");
+        }
 
-                res.send('Usuário criado com sucesso!');
-            }
-            else {
-                let error_msg = ""
-                if(!emailRegex.test(req.body.email)) {
-                    error_msg += "Email inválido. ";
-                }
-                if(req.body.password.length < 8) {
-                    error_msg += "Senha inválida.";
-                }
-                res.status(401).send(error_msg)
-            }
+        if(emailRegex.test(req.body.email) && req.body.password.length >= 8) {
+            console.log(req.body);
+            await userData.save(req.body);
+
+            res.send('Usuário criado com sucesso!');
         }
         else {
-            res.status(404).send("Usuário já existe.")
+            let error_msg = "";
+            if(!emailRegex.test(req.body.email)) {
+                error_msg += "Email inválido. ";
+            }
+            if(req.body.password.length < 8) {
+                error_msg += "Senha inválida.";
+            }
+            res.status(401).send(error_msg);
         }
     })
 
@@ -58,31 +56,30 @@ async function main() {
         const userId = parseInt(req.params.id);
         const user = await userData.findOneBy({ id: userId });
         
-        if(user){
-            const data = {
-                "id": userId,
-                "name": req.body.name,
-                "email": req.body.email,
-                "password": req.body.password
-            }
+        if(!user){
+            return res.status(404).send("Usuário não identificado.");
+        }
+        
+        const data = {
+            "id": userId,
+            "name": req.body.name,
+            "email": req.body.email,
+            "password": req.body.password
+        }
             
-            if(emailRegex.test(data.email) && data.password.length >= 8) {
-                await userData.save(data);
-                res.send('Usuário atualizado com sucesso!');
-            }
-            else {
-                let error_msg = ""
-                if(!emailRegex.test(data.email)) {
-                    error_msg += "Email inválido. ";
-                }
-                if(data.password.length < 8) {
-                    error_msg += "Senha inválida.";
-                }
-                res.status(401).send(error_msg)
-            }
+        if(emailRegex.test(data.email) && data.password.length >= 8) {
+            await userData.save(data);
+            res.send('Usuário atualizado com sucesso!');
         }
         else {
-            res.status(404).send("Usuário não identificado.");
+            let error_msg = "";
+            if(!emailRegex.test(data.email)) {
+                error_msg += "Email inválido. ";
+            }
+            if(data.password.length < 8) {
+                error_msg += "Senha inválida.";
+            }
+            res.status(401).send(error_msg);
         }
     })
 
@@ -90,13 +87,12 @@ async function main() {
         const userId = parseInt(req.params.id);
         const user = await userData.findOneBy({ id: userId });
         
-        if(user) {
-            await userData.remove(user);
-            res.send('Usuário deletado com sucesso!');
+        if(!user) {
+            return res.status(404).send("Usuário não identificado.");
         }
-        else {
-            res.status(404).send("Usuário não identificado.");
-        }
+
+        await userData.remove(user);
+        res.send('Usuário deletado com sucesso!');
     })
 
     const PORT = 8000;
