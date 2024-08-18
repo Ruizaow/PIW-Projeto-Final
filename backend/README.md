@@ -11,4 +11,4 @@ npm run dev
     "password": "teste123"
  },
 ```
-**copie a chave TOKEN de resposta, e, no recurso que se deseja acessar, vá em 'HEADERS' e insira em 'Authorization' a linha: "Bearer 	* *chave Token	* *"**
+**copie a chave TOKEN de resposta, e, no recurso que se deseja acessar, vá em 'HEADERS' e insira em 'Authorization' a linha: "Bearer chave_Token"**
