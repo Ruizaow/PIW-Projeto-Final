@@ -1,9 +1,10 @@
 import { Router } from "express";
 import { userService } from '../services/userService';
+import { authenticateToken, authorizeAdmin, authorizeUser } from '../middleware/authorization';
 
-const router = Router();
+const userRouter = Router();
 
-router.get('/', async (req, res) => {
+userRouter.get('/', authenticateToken, authorizeAdmin, async(req, res) => {
     try {
         const users = await userService.getUsers();
         res.json(users);
@@ -12,7 +13,7 @@ router.get('/', async (req, res) => {
     }
 });
 
-router.post('/', async (req, res) => {
+userRouter.post('/', authenticateToken, authorizeAdmin, async(req, res) => {
     try {
         const user = await userService.createUser(req.body);
         res.json({
@@ -40,7 +41,7 @@ router.post('/', async (req, res) => {
     }
 });
 
-router.put('/:id', async (req, res) => {
+userRouter.put('/:id', authenticateToken, authorizeUser, async(req, res) => {
     try {
         const updatedUser = await userService.updateUser(parseInt(req.params.id), req.body);
         res.json({
@@ -74,7 +75,7 @@ router.put('/:id', async (req, res) => {
     }
 });
 
-router.delete('/:id', async (req, res) => {
+userRouter.delete('/:id', authenticateToken, authorizeAdmin, async(req, res) => {
     try {
         const deletedUser = await userService.deleteUser(parseInt(req.params.id));
         res.json({
@@ -86,4 +87,4 @@ router.delete('/:id', async (req, res) => {
     }
 });
 
-export default router;
+export default userRouter;

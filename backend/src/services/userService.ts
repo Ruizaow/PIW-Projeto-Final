@@ -1,6 +1,6 @@
 import 'reflect-metadata';
 import { AppDataSource } from '../data-source';
-import { User } from '../models/user';
+import { User } from '../entities/user';
 
 const userRepository = AppDataSource.getRepository(User);
 const regex = {
@@ -15,10 +15,8 @@ export const userService = {
 
     createUser: async(userData: User) => {
         const existingUser = await userRepository.findOneBy({ id: userData.id });
-        if(userData.id != null) {
-            if(existingUser)
-                throw new Error("Usuário já existe.");
-        }
+        if(userData.id != null && existingUser)
+            throw new Error("Usuário já existe.");
 
         const missingFields = [];
         if(userData.id == null || userData.id.toString() === '')    missingFields.push("id");

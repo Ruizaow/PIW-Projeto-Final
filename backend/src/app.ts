@@ -1,6 +1,7 @@
 import 'reflect-metadata';
 import express from 'express';
-import router from './routes/userRoutes';
+import authRouter from './routes/authRoutes'
+import userRouter from './routes/userRoutes';
 import { AppDataSource } from './data-source';
 import { engine } from 'express-handlebars';
 import path from 'path';
@@ -16,12 +17,13 @@ app.get('/', (req, res) => {
     res.render('index');
 })
 
-app.use('/users', router)
+app.use('', authRouter)
+app.use('/users', userRouter)
 
 async function main() {
     await AppDataSource.initialize();
 
-    const PORT = 4000;
+    const PORT = 8000;
     app.listen(PORT, () => {
         console.log(`Servidor escutando requisições em http://localhost:${PORT}`);
     })
