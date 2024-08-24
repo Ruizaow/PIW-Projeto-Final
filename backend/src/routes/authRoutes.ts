@@ -3,15 +3,29 @@ import { authService } from '../services/authService';
 
 const authRouter = Router();
 
-authRouter.post('/login', async(req, res) => {
+authRouter.post('/', async(req, res) => {
     try {
-        const token = await authService.login(req.body);
-        res.json({
-            mensagem: "Usuário LOGADO com sucesso!",
-            chave: token
+        const userData = await authService.login(req.body);
+        
+        let message = "";
+        if(userData.papel === 'user')
+            message = "Usuário LOGADO com sucesso!";
+        else
+            message = "Adminstrador LOGADO com sucesso!";
+        const { papel, ...data } = userData;
+
+        res.status(200).json({
+            mensagem: message,
+            dado: data
         });
     } catch(error) {
-        res.status(401).json({ erro: (error as Error).message } );
+        res.status(400).json({ 
+            erro: {
+                status: 400,
+                nome: "Solicitação inválida.",
+                mensagem: (error as Error).message
+            }
+        });
     }
 });
 

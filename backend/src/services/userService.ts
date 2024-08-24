@@ -1,8 +1,27 @@
 import 'reflect-metadata';
 import { AppDataSource } from '../data-source';
 import { User } from '../entities/user';
+import { Role } from '../entities/role';
+
+async function createNewId() {
+    const users = await userRepository.find();
+    
+    if(!users.length || users[0].id !== 1)
+        return 1;
+    for (let i = 1; i < users.length; i++) {
+        if (users[i].id !== users[i - 1].id + 1)
+            return users[i - 1].id + 1;
+    }
+    return users[users.length - 1].id + 1;
+}
+
+async function verifyUserProperty(property: keyof User, value: string) {
+    const user = await userRepository.findOneBy({ [property]: value });
+    return !!user;
+}
 
 const userRepository = AppDataSource.getRepository(User);
+const roleRepository = AppDataSource.getRepository(Role);
 const regex = {
     "email": /^[0-9a-zA-Z.]+@[a-z]+\.[a-z]+$/,
     "password": /^(?=.*\d)(?=.*[a-zA-Z])[0-9a-zA-Z]{8,}$/
@@ -10,7 +29,18 @@ const regex = {
 
 export const userService = {
     getUsers: async() => {
-        return await userRepository.find();
+        return await userRepository.find({ relations: ['role'] });
+    },
+
+    getUser: async(id: number) => {
+        const user = await userRepository.findOne({
+            where: { id: id },
+            relations: ['role']
+        });
+        if(!user)
+            throw new Error("Usuário não identificado.");
+
+        return user;
     },
 
     createUser: async(userData: User) => {
@@ -18,9 +48,23 @@ export const userService = {
         if(userData.id != null && existingUser)
             throw new Error("Usuário já existe.");
 
+        let role: any = userData.role
+        if(userData.role == null)
+            role = "user"
+        else {
+            if(role !== 'user' && role !== 'admin')
+                throw new Error("Papel de usuário não identificado. Você quis dizer 'user' ou 'admin'?");
+        }
+        let roleInDB = await roleRepository.findOneBy({ name: role });
+        if(!roleInDB) {
+            roleInDB = roleRepository.create({ name: role })
+            await roleRepository.save(roleInDB)
+        }
+        userData.role = roleInDB;
+
         const missingFields = [];
-        if(userData.id == null || userData.id.toString() === '')    missingFields.push("id");
-        if(userData.name == null || userData.name === '')           missingFields.push("nome");
+        if(userData.name == null || userData.name === '')           missingFields.push("nome completo");
+        if(userData.username == null || userData.username === '')   missingFields.push("nome de usuário");
         if(userData.email == null || userData.email === '')         missingFields.push("email");
         if(userData.password == null || userData.password === '')   missingFields.push("senha");
         
@@ -31,22 +75,32 @@ export const userService = {
             throw new Error(errorMessage);
         }
         
-        if(userData.role != null) {
-            if(userData.role !== 'user' && userData.role !== 'admin')
-                throw new Error("Papel de usuário não identificado. Você quis dizer 'user' ou 'admin'?");
+        const existingProperties = [];
+        if(await verifyUserProperty('username', userData.username)) existingProperties.push("Nome de usuário");
+        if(await verifyUserProperty('email', userData.email))   	existingProperties.push("Email");
+
+        if(existingProperties.length > 0) {
+            const errorMessage = existingProperties.length > 1 
+                ? `${existingProperties.join(' e ')} já existem.` 
+                : `${existingProperties[0]} já existe.`;
+            throw new Error(errorMessage);
         }
 
-        const errors = [];
-        if (!regex.email.test(userData.email))          errors.push("Email inválido.");
-        if (!regex.password.test(userData.password))    errors.push("Senha inválida.");
-        if (errors.length > 0)
-            throw new Error(errors.join(" "));
+        if(userData.email != null && !regex.email.test(userData.email))             throw new Error("Email inválido. Digite seu endereço, seguido de @, domínio e .com");
+        if(userData.password != null && !regex.password.test(userData.password))    throw new Error("Senha inválida. Digite no mínimo 8 caracteres, com pelo menos um dígito e uma letra.");
+
+        if(userData.id != null && userData.id.toString() !== '')
+            throw new Error("O id do usuário será gerado automaticamente e, portanto, não pode ser atribuido.");
+        userData.id = await createNewId();
 
         return await userRepository.save(userData);
     },
 
     updateUser: async(id: number, userData: User) => {
-        const user = await userRepository.findOneBy({ id });
+        const user = await userRepository.findOne({
+            where: { id: id },
+            relations: ['role']
+        });
         if(!user)
             throw new Error("Usuário não identificado.");
         
@@ -56,43 +110,47 @@ export const userService = {
             if(userData.id != id)
                 throw new Error("O id do usuário não pode ser alterado.");
         }
-
-        const missingFields = [];
-        if(userData.name == null || userData.name === '')           missingFields.push("nome");
-        if(userData.email == null || userData.email === '')         missingFields.push("email");
-        if(userData.password == null || userData.password === '')   missingFields.push("senha");
         
-        if(missingFields.length > 0) {
-            const errorMessage = missingFields.length > 1 
-                ? `Campos de ${missingFields.join(', ')} vazios` 
-                : `Campo de ${missingFields[0]} vazio`;
-            throw new Error(errorMessage);
-        }
-
-        if(userData.role != null) {
-            if(userData.role !== 'user' && userData.role !== 'admin' && userData.role !== '')
+        let role: any = userData.role
+        if(userData.role == null)
+            role = "user"
+        else {
+            if(role !== 'user' && role !== 'admin' && role !== '')
                 throw new Error("Papel de usuário não identificado.");
-            if(userData.role === 'admin')
+            if(role === 'admin')
                 throw new Error("Permissão negada.");
+            if(role === '')
+                role = "user"
         }
-        if(userData.role == null || userData.role === '')
-            userData.role = "user";
-        
-        const errors = [];
-        if (!regex.email.test(userData.email))          errors.push("Email inválido.");
-        if (!regex.password.test(userData.password))    errors.push("Senha inválida.");
-        if (errors.length > 0)
-            throw new Error(errors.join(" "));
+        let roleInDB = await roleRepository.findOneBy({ name: role });
+        if(!roleInDB) {
+            roleInDB = roleRepository.create({ name: role })
+            await roleRepository.save(roleInDB)
+        }
+        userData.role = roleInDB;
 
+        if(userData.email != null && !regex.email.test(userData.email))             throw new Error("Email inválido. Digite seu endereço, seguido de @, domínio e .com");
+        if(userData.password != null && !regex.password.test(userData.password))    throw new Error("Senha inválida. Digite no mínimo 8 caracteres, com pelo menos um dígito e uma letra.");
+    
         await userRepository.update(user, userData);
-        return await userRepository.findOneBy({ id });
+        return await userRepository.findOne({
+            where: { id: id },
+            relations: ['role']
+        });
     },
 
     deleteUser: async(id: number) => {
-        const user = await userRepository.findOneBy({ id });
+        const user = await userRepository.findOne({
+            where: { id: id },
+            relations: ['role']
+        });
         if(!user)
             throw new Error("Usuário não identificado.");
         
-        return await userRepository.remove(user);
+        const deletedUser = {
+            id: user.id,
+            data: await userRepository.remove(user)
+        }
+        return deletedUser;
     }
 };

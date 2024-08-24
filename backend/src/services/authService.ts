@@ -8,15 +8,24 @@ const userRepository = AppDataSource.getRepository(User);
 export const secret = 'token';
 
 export const authService = {
-    login: async(data: User) => {
-        const login = {
-            email: data.email,
-            password: bcrypt.hashSync(data.password, data.password.length)
-        }
-        const user = await userRepository.findOneBy({ email: login.email });
-        if(!user || !bcrypt.compareSync(user.password, login.password))
-            throw new Error("Email ou senha estão incorretos.");
+    login: async(loginData: User) => {
+        loginData.password = bcrypt.hashSync(loginData.password, 10)
 
-        return jwt.sign({ id: user.id }, secret, { expiresIn: '1h' });
+        const user = await userRepository.findOne({
+            where: { username: loginData.username, email: loginData.email },
+            relations: ['role']
+        });
+        if(!user || !bcrypt.compareSync(user.password, loginData.password))
+            throw new Error("Login ou senha estão incorretos.");
+
+        const token = jwt.sign({ userId: user.id, userRole: user.role }, secret, { expiresIn: '1h' })
+
+        const data = {
+            usuário: user.username,
+            email: user.email,
+            papel: user.role.name,
+            chave: token
+        }
+        return data;
     }
 };
