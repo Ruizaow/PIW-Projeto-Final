@@ -1,5 +1,6 @@
-import { Entity, Column, PrimaryGeneratedColumn, ManyToOne } from "typeorm"
+import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, OneToMany } from "typeorm"
 import { Role } from "./role"
+import { Movie } from './movie';
 
 @Entity()
 export class User {
@@ -20,4 +21,7 @@ export class User {
 
     @ManyToOne(() => Role, role => role.users)
     role: Role;
+
+    @OneToMany(() => Movie, (movie) => movie.user)  // Define uma relação OneToMany: um usuário pode ter vários filmes
+    movies: Movie[];  // Define que o usuário terá uma lista de filmes
 }
