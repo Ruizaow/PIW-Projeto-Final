@@ -1,20 +1,22 @@
 <template>
-    <div class="footer">
-      <div class="footer-content">
-        <span>Copyright (c) 2003 CineMundo All Rights Reserved</span><br />
-        <span>TV data from <a href="#">TMDB</a></span>
-      </div>
+  <div class="footer">
+    <div class="footer-content">
+      <span>Copyright (c) 2003 CineMundo All Rights Reserved</span><br />
+      <span>TV data from </span>
     </div>
-  </template>
+  </div>
+</template>
   
-  <style scoped>
+<style scoped>
   .footer {
-    background-color: #deb31b;
-    color: black;
-    text-align: start;
     padding-left: 290px;
     padding-bottom: 15px;
     padding-top: 20px;
+
+    width: 100%;
+    background-color: #deb31b;
+    color: black;
+    text-align: start;
   }
   
   .footer-content {
@@ -27,5 +29,4 @@
     text-decoration: underline;
     color: black;
   }
-  </style>
-  
+</style>

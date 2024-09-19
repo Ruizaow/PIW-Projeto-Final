@@ -1,13 +1,26 @@
+<script>
+  import PopularMovies from './components/PopularMovies.vue';
+  import WeeklyMovies from './components/WeeklyMovies.vue';
+  import CommentsSection from './components/CommentsSection.vue';
+  import Footer from './components/Footer.vue';
+
+  export default {
+    components: {
+      PopularMovies,
+      WeeklyMovies,
+      CommentsSection,
+      Footer,
+    },
+  };
+</script>
+
 <template>
   <div id="app">
-    <header class="header">
+    <header>
       <nav class="logo-title">
-        <a class="logo" href="#">
-          <img src="@/assets/CineMundo-Logo.png" alt="CineMundo Logo" />
-        </a>
-        <a class="cine-mundo" href="#">CineMundo</a>
+        <a href="#" class="logo"><img src="@/assets/CineMundo-Logo.png" alt="CineMundo Logo" /></a>
+        <a href="#" class="cine-mundo">CineMundo</a>
       </nav>
-
       <nav class="menu">
         <a href="#" class="menu-item">Perfil</a>
         <a href="#" class="menu-item">Filmes</a>
@@ -20,67 +33,61 @@
     </header>
 
     <div>
-      <PopularMovies />
-      <WeeklyMovies />
-      <CommentsSection />
-      <Footer />
+      <PopularMovies/>
+      <WeeklyMovies/>
+      <CommentsSection/>
+      <Footer/>
     </div>
     <RouterView></RouterView>
+
+    <footer class="footer">
+      <div class="footer-content">
+        <span>Copyright (c) 2003 CineMundo All Rights Reserved</span><br />
+        <span>TV data from <a href="#">TMDB</a></span>
+      </div>
+    </footer>
   </div>
 </template>
 
-
-<script>
-import PopularMovies from './components/PopularMovies.vue';
-import WeeklyMovies from './components/WeeklyMovies.vue';
-import CommentsSection from './components/CommentsSection.vue';
-import Footer from './components/Footer.vue';
-
-export default {
-  components: {
-    PopularMovies,
-    WeeklyMovies,
-    CommentsSection,
-    Footer,
-  },
-};
-</script>
+<style>
+html, body {
+  background-color: #8B8B8B; /* Altera a cor de fundo da página inteira */
+}
+</style>
 
 <style scoped>
 html, body {
   margin: 0;
-  height: 100%;
-  width: 100%;
+  padding: 0;
 }
 
 #app {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
   width: 100%;
-  min-height: 100vh; /* Garantir que o app ocupe toda a altura da tela */
-  background: #a1a5b1;
+  height: 100%;
 }
 
-.header {
-  position: fixed;
-  top: 0;
-  left: 0;
+header {
   width: 100%;
+
+  padding-top: 10px;
+  padding-bottom: 20px;
+  
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding-top: 5px;
-  padding-bottom: 20px;
   background: #f8c821;
 }
 
 .logo-title {
-  display: flex;
-  align-items: center;
   padding-left: 60px;
 }
 
 .cine-mundo {
   padding-left: 21px;
-  padding-top: 15px;
   font-family: 'Ranchers', sans-serif;
   font-size: 40px;
   color: black;
@@ -111,17 +118,19 @@ html, body {
 
 .menu-rectangle img {
   padding-top: 2px;
+
   height: 35px;
   margin-right: 15px;
 }
 
 .search-input {
+  padding: 5px;
+
   border: none;
   background: none;
   outline: none;
   font-size: 16px;
   width: 100%;
-  padding: 5px;
   color: #030303;
 }
 
