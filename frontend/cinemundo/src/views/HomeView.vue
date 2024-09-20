@@ -1,27 +1,23 @@
 <script>
 import { defineComponent } from 'vue';
 
-//import Header from '@/components/Header.vue';
+import Header from '@/components/Header.vue';
 import FraseSection from '@/components/FraseSection.vue';
 import WeeklyMovies from '@/components/WeeklyMovies.vue';
 import CommentSection from '@/components/CommentsSection.vue';
 import Footer from '@/components/Footer.vue';
 
 export default defineComponent({
-  name: 'HomeView'
-
-
-})
-
-/*export default {
+  name: 'HomeView',
   components: {
     Header,
     FraseSection,
-    PosterGrid,
+    WeeklyMovies,
     CommentSection,
     Footer,
   },
-};*/
+
+})
 </script>
 
 <template>

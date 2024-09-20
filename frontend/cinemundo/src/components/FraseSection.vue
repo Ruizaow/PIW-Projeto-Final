@@ -1,8 +1,9 @@
 <template>
     <div class="frase">
       <h1>Suas Aventuras Cinematográficas</h1>
-      <p>Explore novos mundos, acompanhe seus filmes favoritos e compartilhe suas emoções na tela</p>
-      <button class="btn-cadastre-se">Cadastre-se</button>
+      <p>Explore novos mundos, acompanhe seus filmes favoritos
+         e compartilhe suas emoções na tela</p>
+      <router-link to="/register" class="menu-item"><button class="btn-cadastre-se">Cadastre-se</button></router-link>
     </div>
   </template>
   
