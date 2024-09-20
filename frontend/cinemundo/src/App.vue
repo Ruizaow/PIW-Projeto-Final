@@ -3,9 +3,11 @@
   import WeeklyMovies from './components/WeeklyMovies.vue';
   import CommentsSection from './components/CommentsSection.vue';
   import Footer from './components/Footer.vue';
+  import FraseSection from './components/FraseSection.vue';
 
   export default {
     components: {
+      FraseSection,
       PopularMovies,
       WeeklyMovies,
       CommentsSection,
@@ -30,35 +32,39 @@
           <img src="@/assets/Lupa.png" alt="Buscar" />
         </div>
       </nav>
+
+      <nav>
+        <router-link to="/"></router-link>
+      </nav>
     </header>
 
     <div>
+      <FraseSection/>
       <PopularMovies/>
       <WeeklyMovies/>
       <CommentsSection/>
       <Footer/>
     </div>
+
     <RouterView></RouterView>
 
-    <footer class="footer">
-      <div class="footer-content">
-        <span>Copyright (c) 2003 CineMundo All Rights Reserved</span><br />
-        <span>TV data from <a href="#">TMDB</a></span>
-      </div>
-    </footer>
   </div>
 </template>
 
 <style>
 html, body {
   background-color: #8B8B8B; /* Altera a cor de fundo da página inteira */
+  margin: 0;
+  padding: 0;
 }
+
 </style>
 
 <style scoped>
 html, body {
   margin: 0;
   padding: 0;
+
 }
 
 #app {
@@ -71,9 +77,9 @@ html, body {
 }
 
 header {
-  width: 100%;
+  width: 100vw;
 
-  padding-top: 10px;
+  padding-top: 20px;
   padding-bottom: 20px;
   
   display: flex;
@@ -94,10 +100,10 @@ header {
 }
 
 .menu {
-  padding-top: 15px;
-  padding-left: 40px;
   display: flex;
   gap: 30px;
+  align-items: center;
+  padding-left: 600px;
 }
 
 .menu-item {
@@ -109,9 +115,10 @@ header {
 
 .menu-rectangle {
   display: flex;
-  justify-content: flex-end;
+
   height: 40px;
   background: #a1a5b1;
+  
   border-radius: 75px;
   width: 239px;
 }

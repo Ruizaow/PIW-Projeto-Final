@@ -7,7 +7,8 @@
           <path d="M59,451 L17,482.941 L59,514"/>
         </svg>
       </div>
-      <div class="poster">Em trabalho</div>
+      <div class="poster"><img src="@/assets/Dune_Part02.png" alt="Dune Part 2" />
+      </div>
       <div class="poster">Em trabalho</div>
       <div class="poster">Em trabalho</div>
       <div class="poster">Em trabalho</div>
@@ -33,7 +34,7 @@ export default {
 }
 
 .title {
-  font-size: 30px;
+  font-size: 25px;
   color: black;
   margin-bottom: 20px;
   padding-top: 50px;
@@ -49,12 +50,17 @@ export default {
 }
 
 .poster {
-  width: 223.75px;
-  height: 335px;
+  width: 224px;
+  height: 340px;
   border-radius: 12px;
   background-color: #b1b2b5;
   border: 1px solid black;
   text-align: center;
-  padding-top: 150px;
+}
+
+.poster img {
+  width: 100%;
+  height: 100%;
+  border-radius: 12px;
 }
 </style>

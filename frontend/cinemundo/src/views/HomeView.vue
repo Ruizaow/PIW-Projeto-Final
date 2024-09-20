@@ -1,10 +1,36 @@
+<script>
+import { defineComponent } from 'vue';
 
-<script setup lang="ts">
-//import TheWelcome from '../components/TheWelcome.vue'
+//import Header from '@/components/Header.vue';
+import FraseSection from '@/components/FraseSection.vue';
+import WeeklyMovies from '@/components/WeeklyMovies.vue';
+import CommentSection from '@/components/CommentsSection.vue';
+import Footer from '@/components/Footer.vue';
+
+export default defineComponent({
+  name: 'HomeView'
+
+
+})
+
+/*export default {
+  components: {
+    Header,
+    FraseSection,
+    PosterGrid,
+    CommentSection,
+    Footer,
+  },
+};*/
 </script>
 
 <template>
-  <main>
-    <TheWelcome />
-  </main>
+  <div>
+    <Header />
+    <FraseSection />
+    <WeeklyMovies />
+    <CommentSection />
+    <Footer />
+  </div>
 </template>
+
