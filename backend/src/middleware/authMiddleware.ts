@@ -69,7 +69,7 @@ export const authorizeUser = async(req: Request, res: Response, next: NextFuncti
         relations: ['role']
     });
     
-    if(user?.id === parseInt(req.params.id) || user?.role?.name === 'admin')
+    if(user?.id === parseInt(req.params.id) || user?.id === parseInt(req.params.user_id) || user?.role?.name === 'admin')
         next();
     else {
         if(user?.role?.name === 'user') {

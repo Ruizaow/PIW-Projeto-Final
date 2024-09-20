@@ -2,6 +2,7 @@ import 'reflect-metadata';
 import express from 'express';
 import authRouter from './routes/authRoutes'
 import userRouter from './routes/userRoutes';
+import movieRouter from './routes/movieRoutes';
 import { AppDataSource } from './data-source';
 import { engine } from 'express-handlebars';
 import path from 'path';
@@ -28,9 +29,10 @@ app.set('views', path.join(__dirname, '/views'));
 app.use(express.json());
 app.use('/login', authRouter);
 app.use('/users', userRouter);
+app.use('/films', movieRouter);
 
 app.get('/', (req, res) => {
     res.render('index');
-})
+});
 
 startServer();

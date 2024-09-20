@@ -1,18 +1,57 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, OneToOne, OneToMany, ManyToOne, JoinColumn } from 'typeorm';
 import { User } from './user';
 
-@Entity()  // Define que esta classe será uma entidade do banco de dado
-export class Movie {
-  
-  @PrimaryGeneratedColumn()  // Define que a coluna 'id' será a chave primária e seu valor será gerado automaticamente
+@Entity()
+export class Poster {
+  @PrimaryGeneratedColumn()
   id: number;
 
-  @Column()  // Define uma coluna simples para o título do filme
+  @Column()
+  imageUrl: string = "";
+}
+
+@Entity()
+export class Movie {
+  @PrimaryGeneratedColumn()
+  id: number;
+
+  @Column()
   title: string;
 
-  @Column()  // Define uma coluna para o ano de lançamento do filme
-  diretor: string;
+  @Column()
+  releaseDate: number;
 
-  @ManyToOne(() => User, (user) => user.movies)  // Define uma relação ManyToOne (muitos filmes podem ser de um único usuário)
-  user: User;  // Relaciona o filme a um usuário
+  @Column()
+  synopsis: string;
+
+  @OneToOne(() => Poster, { nullable: true, cascade: true, onDelete: "CASCADE" })
+  @JoinColumn()
+  poster: Poster;
+
+  @OneToMany(() => Review, (review) => review.movie)
+  @JoinColumn()
+  reviews: Review[];
+  
+  @ManyToOne(() => User, (user) => user.movies)
+  user: User;
+}
+
+@Entity()
+export class Review {
+  @PrimaryGeneratedColumn()
+  id: number;
+
+  @Column()
+  rating: number;
+
+  @Column()
+  review: string;
+
+  @ManyToOne(() => User, (user) => user.reviews)
+  @JoinColumn()
+  user: User;
+
+  @ManyToOne(() => Movie, (movie) => movie.reviews)
+  @JoinColumn()
+  movie: Movie;
 }

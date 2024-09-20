@@ -1,49 +1,42 @@
 import { Router } from "express";
 import { userService } from '../services/userService';
+import friendRouter from '../routes/list_of_friendsRoutes';
+import movieRouter from '../routes/list_of_moviesRoutes';
 import { authenticateToken, authorizeAdmin, authorizeUser } from '../middleware/authMiddleware';
-
-function getErrorResponse(status: number, name: string, message: string) {
-    const response = {
-        status: status,
-        nome: name,
-        mensagem: message
-    }
-    return response
-}
+import { getErrorResponse } from '../utils';
 
 const userRouter = Router();
-userRouter.use(authenticateToken);
 
-userRouter.get('/', authorizeAdmin, async(req, res) => {
+userRouter.get('/', authenticateToken, authorizeAdmin, async(req, res) => {
     try {
-        const users = await userService.getUsers();
+        const users = await userService.getAll();
         res.status(200).json({
             mensagem: "Aqui está a lista de usuários.",
-            dado: users
+            dados: users
         });
     } catch(error) {
         res.status(500).json({ erro: getErrorResponse(500, "Erro interno do servidor.", "Falha na leitura do recurso.") });
     }
 });
 
-userRouter.get('/:id', authorizeUser, async(req, res) => {
+userRouter.get('/:id', authenticateToken, authorizeUser, async(req, res) => {
     try {
-        const user = await userService.getUser(parseInt(req.params.id));
+        const user = await userService.get(parseInt(req.params.id));
         res.status(200).json({ 
             mensagem: "Aqui está o usuário requisitado.",
-            dado: user
+            dados: user
         });
     } catch(error) {
-        res.status(400).json({ erro: getErrorResponse(400, "Solicitação inválida.", (error as Error).message) });
+        res.status(404).json({ erro: getErrorResponse(404, "Não encontrado.", (error as Error).message) });
     }
 });
 
-userRouter.post('/', authorizeAdmin, async(req, res) => {
+userRouter.post('/', async(req, res) => {
     try {
-        const user = await userService.createUser(req.body);
+        const user = await userService.create(req.body);
         res.status(200).json({
-            mensagem: "Usuário CRIADO com sucesso!",
-            dado: {
+            mensagem: "Usuário CADASTRADO com sucesso!",
+            dados: {
                 id: user.id,
                 name: user.name,
                 username: user.username,
@@ -77,12 +70,12 @@ userRouter.post('/', authorizeAdmin, async(req, res) => {
     }
 });
 
-userRouter.put('/:id', authorizeUser, async(req, res) => {
+userRouter.put('/:id', authenticateToken, authorizeUser, async(req, res) => {
     try {
-        const updatedUser = await userService.updateUser(parseInt(req.params.id), req.body);
+        const updatedUser = await userService.update(parseInt(req.params.id), req.body);
         res.status(200).json({
             mensagem: "Usuário ATUALIZADO com sucesso!",
-            dado: updatedUser
+            dados: updatedUser
         });
     } catch(error) {
         const errorMessage = (error as Error).message;
@@ -109,17 +102,20 @@ userRouter.put('/:id', authorizeUser, async(req, res) => {
     }
 });
 
-userRouter.delete('/:id', authorizeAdmin, async(req, res) => {
+userRouter.delete('/:id', authenticateToken, authorizeAdmin, async(req, res) => {
     try {
-        const deletedUser = await userService.deleteUser(parseInt(req.params.id));
+        const deletedUser = await userService.delete(parseInt(req.params.id));
         deletedUser.data.id = deletedUser.id
         res.status(200).json({
             mensagem:"Usuário DELETADO com sucesso!",
-            dado: deletedUser.data
+            dados: deletedUser.data
         });
     } catch(error) {
-        res.status(400).json({ erro: getErrorResponse(400, "Solicitação inválida.", (error as Error).message) });
+        res.status(404).json({ erro: getErrorResponse(404, "Não encontrado.", (error as Error).message) });
     }
 });
+
+userRouter.use('/', friendRouter);
+userRouter.use('/', movieRouter);
 
 export default userRouter;

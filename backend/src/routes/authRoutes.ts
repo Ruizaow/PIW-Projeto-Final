@@ -16,7 +16,7 @@ authRouter.post('/', async(req, res) => {
 
         res.status(200).json({
             mensagem: message,
-            dado: data
+            dados: data
         });
     } catch(error) {
         res.status(400).json({ 

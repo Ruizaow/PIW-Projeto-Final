@@ -1,6 +1,17 @@
-import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, OneToMany } from "typeorm"
-import { Role } from "./role"
-import { Movie } from './movie';
+import { Entity, PrimaryGeneratedColumn, Column, OneToMany, ManyToOne, ManyToMany, JoinColumn, JoinTable } from 'typeorm';
+import { Movie, Review } from './movie';
+
+@Entity()
+export class Role {
+    @PrimaryGeneratedColumn()
+    id: number;
+
+    @Column()
+    name: string;
+
+    @OneToMany(() => User, user => user.role)
+    users: User[];
+}
 
 @Entity()
 export class User {
@@ -19,9 +30,27 @@ export class User {
     @Column()
     password: string;
 
-    @ManyToOne(() => Role, role => role.users)
+    @JoinColumn()
+    @ManyToOne(() => Role, (role) => role.users)
     role: Role;
 
-    @OneToMany(() => Movie, (movie) => movie.user)  // Define uma relação OneToMany: um usuário pode ter vários filmes
-    movies: Movie[];  // Define que o usuário terá uma lista de filmes
+    @ManyToMany(() => User)
+    @JoinTable({
+        name: 'user_friends',
+        joinColumn: {
+            name: 'user_id',
+            referencedColumnName: 'id'
+        },
+        inverseJoinColumn: {
+            name: 'friend_id',
+            referencedColumnName: 'id'
+        }
+    })
+    friends: User[];
+
+    @OneToMany(() => Movie, (movie) => movie.user)
+    movies: Movie[];
+
+    @OneToMany(() => Review, (review) => review.user)
+    reviews: Review[];
 }

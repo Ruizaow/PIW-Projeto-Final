@@ -1,24 +1,7 @@
 import 'reflect-metadata';
 import { AppDataSource } from '../data-source';
-import { User } from '../entities/user';
-import { Role } from '../entities/role';
-
-async function createNewId() {
-    const users = await userRepository.find();
-    
-    if(!users.length || users[0].id !== 1)
-        return 1;
-    for (let i = 1; i < users.length; i++) {
-        if (users[i].id !== users[i - 1].id + 1)
-            return users[i - 1].id + 1;
-    }
-    return users[users.length - 1].id + 1;
-}
-
-async function verifyUserProperty(property: keyof User, value: string) {
-    const user = await userRepository.findOneBy({ [property]: value });
-    return !!user;
-}
+import { User, Role } from '../entities/user';
+import { createNewId, verifyUserProperty } from '../utils';
 
 const userRepository = AppDataSource.getRepository(User);
 const roleRepository = AppDataSource.getRepository(Role);
@@ -28,25 +11,23 @@ const regex = {
 }
 
 export const userService = {
-    getUsers: async() => {
+    getAll: async() => {
         return await userRepository.find({ relations: ['role'] });
     },
 
-    getUser: async(id: number) => {
+    get: async(id: number) => {
         const user = await userRepository.findOne({
             where: { id: id },
             relations: ['role']
         });
-        if(!user)
-            throw new Error("Usuário não identificado.");
+        if(!user) throw new Error("Usuário não identificado.");
 
         return user;
     },
 
-    createUser: async(userData: User) => {
+    create: async(userData: User) => {
         const existingUser = await userRepository.findOneBy({ id: userData.id });
-        if(userData.id != null && existingUser)
-            throw new Error("Usuário já existe.");
+        if(userData.id != null && existingUser) throw new Error("Usuário já existe.");
 
         let role: any = userData.role
         if(userData.role == null)
@@ -55,6 +36,7 @@ export const userService = {
             if(role !== 'user' && role !== 'admin')
                 throw new Error("Papel de usuário não identificado. Você quis dizer 'user' ou 'admin'?");
         }
+
         let roleInDB = await roleRepository.findOneBy({ name: role });
         if(!roleInDB) {
             roleInDB = roleRepository.create({ name: role })
@@ -91,18 +73,17 @@ export const userService = {
 
         if(userData.id != null && userData.id.toString() !== '')
             throw new Error("O id do usuário será gerado automaticamente e, portanto, não pode ser atribuido.");
-        userData.id = await createNewId();
+        userData.id = createNewId(await userRepository.find());
 
         return await userRepository.save(userData);
     },
 
-    updateUser: async(id: number, userData: User) => {
+    update: async(id: number, userData: User) => {
         const user = await userRepository.findOne({
             where: { id: id },
             relations: ['role']
         });
-        if(!user)
-            throw new Error("Usuário não identificado.");
+        if(!user) throw new Error("Usuário não identificado.");
         
         if(userData.id != null) {
             if(userData.id.toString() === '')
@@ -122,6 +103,7 @@ export const userService = {
             if(role === '')
                 role = "user"
         }
+
         let roleInDB = await roleRepository.findOneBy({ name: role });
         if(!roleInDB) {
             roleInDB = roleRepository.create({ name: role })
@@ -139,18 +121,17 @@ export const userService = {
         });
     },
 
-    deleteUser: async(id: number) => {
+    delete: async(id: number) => {
         const user = await userRepository.findOne({
             where: { id: id },
             relations: ['role']
         });
-        if(!user)
-            throw new Error("Usuário não identificado.");
+        if(!user) throw new Error("Usuário não identificado.");
         
         const deletedUser = {
             id: user.id,
             data: await userRepository.remove(user)
-        }
+        };
         return deletedUser;
     }
 };
