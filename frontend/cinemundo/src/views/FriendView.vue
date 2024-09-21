@@ -1,14 +1,14 @@
 <script>
     import { defineComponent } from 'vue';
 
-    import Header from '@/components/Header.vue';
+    import HeaderLogged from '@/components/HeaderLogged.vue';
     import Footer from '@/components/Footer.vue';
     import Friend from '@/components/Friend.vue';
 
     export default defineComponent({
         name: 'FriendView',
         components: {
-            Header,
+            HeaderLogged,
             Friend,
             Footer,
         },

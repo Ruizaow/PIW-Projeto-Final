@@ -1,14 +1,14 @@
 <script>
     import { defineComponent } from 'vue';
 
-    import Header from '@/components/Header.vue';
+    import HeaderLogged from '@/components/HeaderLogged.vue';
     import Footer from '@/components/Footer.vue';
     import Sinopse from '@/components/Sinopse.vue';
 
     export default defineComponent({
         name: 'SinopseView',
         components: {
-            Header,
+            HeaderLogged,
             Sinopse,
             Footer,
         },
