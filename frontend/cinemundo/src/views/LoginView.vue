@@ -5,52 +5,82 @@ import Header from '@/components/Header.vue';
 import Footer from '@/components/Footer.vue';
 
 export default defineComponent({
-  name: 'LoginView',
-  components: {
-    Header,
-    Footer,
-  },
+    name: 'LoginView',
+    components: {
+        Header,
+        Footer
+    }
 });
 </script>
 
 <template>
-  <div>
-    <Header />
-
-    <div class="login-container">
-      <div class="login-box">
-        <h1>Login</h1>
-        <label>
-          E-mail
-          <input type="text" placeholder="Digite seu e-mail ou Username">
-        </label>
-
-        <label>
-          Password
-          <input type="password" placeholder="Digite sua senha">
-        </label>
-
-        <div class="checkbox-container">
-          <input type="checkbox" id="Lembrar">
-          <label for="age-confirmation" class="checkbox-label">Lembre de Mim</label>
+    <div class="background-container">
+        <div class="background-image">
+            <img src="@/assets/Martin-Scorsese.png" alt="Martin-Scorsese">
         </div>
-        <router-link to="/LoggerdHome"><button class="submit-button">Entrar</button></router-link>
-      </div>
+        <div class="overlay"></div>
+        
+        <Header />
 
-    <Footer />
+        <div class="login-container">
+        <div class="login-box">
+            <h1>Login</h1>
+            <label>
+            E-mail
+            <input type="text" placeholder="Digite seu e-mail ou Username">
+            </label>
 
+            <label>
+            Password
+            <input type="password" placeholder="Digite sua senha">
+            </label>
+
+            <div class="checkbox-container">
+            <input type="checkbox" id="Lembrar">
+            <label for="age-confirmation" class="checkbox-label">Lembre de Mim</label>
+            </div>
+            <router-link to="/LoggedHome"><button class="submit-button">Entrar</button></router-link>
+        </div>
+
+        <Footer />
+
+        </div>
     </div>
-  </div>
 </template>
 
 <style scoped>
+.background-container {
+    position: relative;
+    z-index: 1;
+}
+
+.background-image {
+    position: absolute;
+    width: 100vw;
+    z-index: -1;
+    opacity: 0.8;
+}
+
+.background-image img {
+    width: 100%;
+}
+
+.overlay {
+    position: absolute;
+    width: 100vw;
+    height: 100%;
+    background: linear-gradient(to bottom, rgba(255, 255, 255, 0), rgb(100, 100, 100, 0.6), rgb(100, 100, 100), rgb(100, 100, 100));
+    z-index: -1;
+    opacity: 1;
+}
+
 .login-container {
     display: flex;
     justify-content: center;
     align-items: center;
     flex: 1;
     flex-direction: column;
-    padding-top: 50px;
+    padding-top: 80px;
 }
 
 .login-box {
@@ -127,4 +157,3 @@ export default defineComponent({
     background: #D9A520;
 }
 </style>
-

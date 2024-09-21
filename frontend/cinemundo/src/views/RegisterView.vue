@@ -5,45 +5,77 @@ import Header from '@/components/Header.vue';
 import Footer from '@/components/Footer.vue';
 
 export default defineComponent({
-  name: 'RegisterView',
-  components: {
-    Header,
-    Footer,
-  },
+    name: 'RegisterView',
+    components: {
+        Header,
+        Footer,
+    },
 });
 </script>
 
 <template>
-  <Header />
-  
-  <div class="registration-container">
-      <div class="registration-box">
-        <h1>Cadastro</h1>
-        <label>
-          E-mail
-          <input type="text" placeholder="Digite seu e-mail">
-        </label>
-        <label>
-          Username
-          <input type="text" placeholder="Digite seu username">
-        </label>
-        <label>
-          Password
-          <input type="password" placeholder="Digite sua senha">
-        </label>
-        <div class="checkbox-container">
-          <input type="checkbox" id="age-confirmation">
-          <label for="age-confirmation" class="checkbox-label">Você confirma ter mais de 16 anos e que possivelmente estará vendendo sua alma e aceita os Termos de Uso</label>
+    <div class="background-container">
+        <div class="background-image">
+            <img src="@/assets/Martin-Scorsese.png" alt="Martin-Scorsese">
         </div>
-        <button class="submit-button">Cadastre-se</button>
-      </div>
+        <div class="overlay"></div>
 
-      <Footer />
-  </div>
+        <Header />
+        
+        <div class="registration-container">
+            <div class="registration-box">
+                <h1>Cadastro</h1>
+                <label>
+                E-mail
+                <input type="text" placeholder="Digite seu e-mail">
+                </label>
+                <label>
+                Username
+                <input type="text" placeholder="Digite seu username">
+                </label>
+                <label>
+                Password
+                <input type="password" placeholder="Digite sua senha">
+                </label>
+                <div class="checkbox-container">
+                <input type="checkbox" id="age-confirmation">
+                <label for="age-confirmation" class="checkbox-label">Você confirma ter mais de 16 anos e que possivelmente estará vendendo sua alma e aceita os Termos de Uso</label>
+                </div>
+                <button class="submit-button">Cadastre-se</button>
+            </div>
 
+            <Footer />
+
+        </div>
+    </div>
 </template>
 
 <style scoped>
+.background-container {
+    position: relative;
+    z-index: 1;
+}
+
+.background-image {
+    position: absolute;
+    width: 100vw;
+    z-index: -1;
+    opacity: 0.8;
+}
+
+.background-image img {
+    width: 100%;
+}
+
+.overlay {
+    position: absolute;
+    width: 100vw;
+    height: 100%;
+    background: linear-gradient(to bottom, rgba(255, 255, 255, 0), rgb(100, 100, 100, 0.6), rgb(100, 100, 100), rgb(100, 100, 100));
+    z-index: -1;
+    opacity: 1;
+}
+
 .registration-container {
     display: flex;
     justify-content: center;
