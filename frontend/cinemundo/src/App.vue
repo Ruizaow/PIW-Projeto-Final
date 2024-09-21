@@ -11,7 +11,7 @@ export default{
 
     <RouterView />
     
-    <Footer />
+  <Footer />
 </template>
 
 <style>

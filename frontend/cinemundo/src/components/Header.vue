@@ -57,6 +57,7 @@ header {
   padding-left: 21px;
   font-family: 'Ranchers', sans-serif;
   font-size: 40px;
+  font-weight: 800;
   color: black;
 }
 
