@@ -14,7 +14,7 @@
 </script>
 
 <template>
-    <Header/>
+    <HeaderLogged/>
     
     <div class="filmes-section">
         <h2>Filmes</h2>

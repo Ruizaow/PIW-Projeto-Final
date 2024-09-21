@@ -18,7 +18,7 @@
 
 <template>
     <div>
-        <Header />
+        <HeaderLogged />
         <Sinopse />
         <Footer />
 

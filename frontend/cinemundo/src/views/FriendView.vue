@@ -12,15 +12,13 @@
             Friend,
             Footer,
         },
-  });
-  
+    });
 </script>
 
 <template>
     <div>
-        <Header />
+        <HeaderLogged />
         <Friend />
         <Footer />
-
     </div>
 </template>
