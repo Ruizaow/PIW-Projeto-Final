@@ -34,6 +34,9 @@ export class User {
     @ManyToOne(() => Role, (role) => role.users)
     role: Role;
 
+    @Column()
+    profile_picture_Url: string = "";
+
     @ManyToMany(() => User)
     @JoinTable({
         name: 'user_friends',

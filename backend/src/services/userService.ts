@@ -29,26 +29,12 @@ export const userService = {
         const existingUser = await userRepository.findOneBy({ id: userData.id });
         if(userData.id != null && existingUser) throw new Error("Usuário já existe.");
 
-        let role: any = userData.role
-        if(userData.role == null)
-            role = "user"
-        else {
-            if(role !== 'user' && role !== 'admin')
-                throw new Error("Papel de usuário não identificado. Você quis dizer 'user' ou 'admin'?");
-        }
-
-        let roleInDB = await roleRepository.findOneBy({ name: role });
-        if(!roleInDB) {
-            roleInDB = roleRepository.create({ name: role })
-            await roleRepository.save(roleInDB)
-        }
-        userData.role = roleInDB;
-
         const missingFields = [];
         if(userData.name == null || userData.name === '')           missingFields.push("nome completo");
         if(userData.username == null || userData.username === '')   missingFields.push("nome de usuário");
         if(userData.email == null || userData.email === '')         missingFields.push("email");
         if(userData.password == null || userData.password === '')   missingFields.push("senha");
+        if(userData.role == null || userData.role.name === '')      missingFields.push("papel do usuário");
         
         if(missingFields.length > 0) {
             const errorMessage = missingFields.length > 1 
@@ -56,6 +42,18 @@ export const userService = {
                 : `Campo de ${missingFields[0]} vazio`;
             throw new Error(errorMessage);
         }
+
+        let role: any = userData.role
+        if(role !== 'Usuário padrão' && role !== 'Usuário premium' && role !== 'Administrador')
+            throw new Error("Papel de usuário não identificado.");
+
+        let roleInDB = await roleRepository.findOneBy({ name: role });
+        if(!roleInDB) {
+            roleInDB = roleRepository.create({ name: role })
+            roleInDB.id = createNewId(await roleRepository.find());
+            await roleRepository.save(roleInDB)
+        }
+        userData.role = roleInDB;
         
         const existingProperties = [];
         if(await verifyUserProperty('username', userData.username)) existingProperties.push("Nome de usuário");
@@ -75,6 +73,8 @@ export const userService = {
             throw new Error("O id do usuário será gerado automaticamente e, portanto, não pode ser atribuido.");
         userData.id = createNewId(await userRepository.find());
 
+        if(userData.profile_picture_Url == null) userData.profile_picture_Url = "";
+
         return await userRepository.save(userData);
     },
 
@@ -91,22 +91,18 @@ export const userService = {
             if(userData.id != id)
                 throw new Error("O id do usuário não pode ser alterado.");
         }
+
+        console.log(userData)
+        console.log(userData.role)
         
         let role: any = userData.role
-        if(userData.role == null)
-            role = "user"
-        else {
-            if(role !== 'user' && role !== 'admin' && role !== '')
-                throw new Error("Papel de usuário não identificado.");
-            if(role === 'admin')
-                throw new Error("Permissão negada.");
-            if(role === '')
-                role = "user"
-        }
+        if(role !== 'Usuário padrão' && role !== 'Usuário premium' && role !== 'Administrador')
+            throw new Error("Papel de usuário não identificado.");
 
         let roleInDB = await roleRepository.findOneBy({ name: role });
         if(!roleInDB) {
             roleInDB = roleRepository.create({ name: role })
+            roleInDB.id = createNewId(await roleRepository.find());
             await roleRepository.save(roleInDB)
         }
         userData.role = roleInDB;
@@ -114,11 +110,13 @@ export const userService = {
         if(userData.email != null && !regex.email.test(userData.email))             throw new Error("Email inválido. Digite seu endereço, seguido de @, domínio e .com");
         if(userData.password != null && !regex.password.test(userData.password))    throw new Error("Senha inválida. Digite no mínimo 8 caracteres, com pelo menos um dígito e uma letra.");
     
-        await userRepository.update(user, userData);
-        return await userRepository.findOne({
-            where: { id: id },
-            relations: ['role']
-        });
+        user.name = userData.name || user.name
+        user.username = userData.username || user.username
+        user.email = userData.email || user.email
+        user.password = userData.password || user.password
+        user.role = roleInDB
+
+        return await userRepository.save(user);
     },
 
     delete: async(id: number) => {

@@ -50,7 +50,7 @@ export const authorizeAdmin = async(req: Request, res: Response, next: NextFunct
         relations: ['role']
     });
 
-    if(user?.role?.name === 'admin')
+    if(user?.role?.name === 'Administrador')
         next();
     else {
         res.status(403).json({ 
@@ -69,10 +69,10 @@ export const authorizeUser = async(req: Request, res: Response, next: NextFuncti
         relations: ['role']
     });
     
-    if(user?.id === parseInt(req.params.id) || user?.id === parseInt(req.params.user_id) || user?.role?.name === 'admin')
+    if(user?.id === parseInt(req.params.id) || user?.id === parseInt(req.params.user_id) || user?.role?.name === 'Administrador')
         next();
     else {
-        if(user?.role?.name === 'user') {
+        if(user?.role?.name === 'Usuário padrão' || user?.role?.name === 'Usuário premium') {
             return res.status(403).json({ 
                 erro: {
                     status: 403,

@@ -7,7 +7,7 @@ import { getErrorResponse } from '../utils';
 
 const userRouter = Router();
 
-userRouter.get('/', authenticateToken, authorizeAdmin, async(req, res) => {
+userRouter.get('/', /*authenticateToken, authorizeAdmin,*/ async(req, res) => {
     try {
         const users = await userService.getAll();
         res.status(200).json({
@@ -19,7 +19,7 @@ userRouter.get('/', authenticateToken, authorizeAdmin, async(req, res) => {
     }
 });
 
-userRouter.get('/:id', authenticateToken, authorizeUser, async(req, res) => {
+userRouter.get('/:id', /*authenticateToken, authorizeUser,*/ async(req, res) => {
     try {
         const user = await userService.get(parseInt(req.params.id));
         res.status(200).json({ 
@@ -60,7 +60,7 @@ userRouter.post('/', async(req, res) => {
             case "O id do usuário será gerado automaticamente e, portanto, não pode ser atribuido.":
                 res.status(401).json({ erro: getErrorResponse(401, "Não autorizado.", errorMessage) });
                 break;
-            case "Papel de usuário não identificado. Você quis dizer 'user' ou 'admin'?":
+            case "Papel de usuário não identificado.":
                 res.status(404).json({ erro: getErrorResponse(404, "Não encontrado.", errorMessage) });
                 break;
             default:
@@ -70,7 +70,7 @@ userRouter.post('/', async(req, res) => {
     }
 });
 
-userRouter.put('/:id', authenticateToken, authorizeUser, async(req, res) => {
+userRouter.put('/:id', /*authenticateToken, authorizeUser,*/ async(req, res) => {
     try {
         const updatedUser = await userService.update(parseInt(req.params.id), req.body);
         res.status(200).json({
@@ -86,9 +86,9 @@ userRouter.put('/:id', authenticateToken, authorizeUser, async(req, res) => {
             case "O id do usuário não pode ser alterado.":
                 res.status(401).json({ erro: getErrorResponse(401, "Não autorizado.", errorMessage) });
                 break;
-            case "Permissão negada.":
+            /* case "Permissão negada.":
                 res.status(403).json({ erro: getErrorResponse(403, "Proibido.", errorMessage) });
-                break;
+                break; */
             case "Usuário não identificado.":
                 res.status(404).json({ erro: getErrorResponse(404, "Não encontrado.", errorMessage) });
                 break;
@@ -102,7 +102,7 @@ userRouter.put('/:id', authenticateToken, authorizeUser, async(req, res) => {
     }
 });
 
-userRouter.delete('/:id', authenticateToken, authorizeAdmin, async(req, res) => {
+userRouter.delete('/:id', /*authenticateToken, authorizeAdmin,*/ async(req, res) => {
     try {
         const deletedUser = await userService.delete(parseInt(req.params.id));
         deletedUser.data.id = deletedUser.id

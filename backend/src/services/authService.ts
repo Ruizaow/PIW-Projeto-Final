@@ -21,9 +21,7 @@ export const authService = {
         const token = jwt.sign({ userId: user.id, userRole: user.role }, secret, { expiresIn: '1h' })
 
         const data = {
-            usuário: user.username,
-            email: user.email,
-            papel: user.role.name,
+            usuário: user,
             chave: token
         }
         return data;

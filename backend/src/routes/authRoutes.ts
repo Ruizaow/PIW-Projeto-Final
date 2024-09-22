@@ -8,15 +8,17 @@ authRouter.post('/', async(req, res) => {
         const userData = await authService.login(req.body);
         
         let message = "";
-        if(userData.papel === 'user')
-            message = "Usuário LOGADO com sucesso!";
-        else
+        if(userData.usuário.role.name === 'Administrador')
             message = "Adminstrador LOGADO com sucesso!";
-        const { papel, ...data } = userData;
+        else
+            message = "Usuário LOGADO com sucesso!";
 
         res.status(200).json({
             mensagem: message,
-            dados: data
+            dados: {
+                usuário: userData.usuário,
+                chave: userData.chave
+            }
         });
     } catch(error) {
         res.status(400).json({ 
