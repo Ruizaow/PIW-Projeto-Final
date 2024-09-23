@@ -110,7 +110,7 @@ onMounted(async () => {
 
             <div class="button-container" >
                 <!-- Botão para remover o filme (Disponível apenas para usuários (padrões ou administradores) logados) -->
-                <div v-if="userStore.userData.id > 0" class="action-button" @click="">
+                <div v-if="userStore.userData.id > 0" class="button" @click="">
                     <span class="plus">+</span>
                     <span>Adicionar Filme à Lista</span>
                 </div>
@@ -154,11 +154,9 @@ onMounted(async () => {
 .profile-container {
     font-family: "Quicksand", sans-serif;
     font-weight: 400;
-
     display: flex;
     justify-content: center;
     align-items: center;
-    flex: 1;
     padding: 40px;
     width: 100%;
 }
@@ -169,20 +167,16 @@ onMounted(async () => {
     border-radius: 20px;
     padding: 30px;
     display: flex;
+    flex-direction: row; /* Itens lado a lado */
     gap: 20px;
 }
   
-.film-title {
+.film-info {
+    flex: 2; /* Controle de tamanho da sinopse */
+    color: white;
     display: flex;
-    font-size: 24px;
-    align-items: baseline; /* Alinha o ano com o título */
-    color: white; /* Cor do título */
-    margin-bottom: 20px; /* Espaço abaixo do título */
-}
-
-.year {
-    font-size: 24px;
-    margin-left: 10px; /* Espaço entre o título e o ano */
+    flex-direction: column;
+    justify-content: flex-start; /* Começa com o texto */
 }
   
 .film-image {
@@ -190,27 +184,18 @@ onMounted(async () => {
     height: 415px;
 }
   
-.film-info {
-    flex: 1; /* Permite que a sinopse ocupe o espaço restante */
-    color: white; /* Cor da sinopse */
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start; /* Alinhamento à esquerda */
-}
-  
 .synopsis {
-    font-size: 32px;
+    font-size: 20px;
     text-align: justify;
     line-height: 1.5;
-    margin-top: 80px; /* Espaço acima da sinopse */
+    margin-bottom: 30px; /* Espaço abaixo da sinopse */
 }
   
 .button-container {
     display: flex;
-    justify-content: center; /* Centraliza os botões horizontalmente */
-    gap: 50px; /* Espaço entre os botões */
-    margin-top: 30px; /* Espaço acima da linha dos botões */
-    margin-left: 350px;
+    justify-content: flex-start; /* Alinha os botões à esquerda */
+    gap: 20px; /* Espaço entre os botões */
+    margin-top: 30px; /* Espaço acima dos botões */
 }
 
 .action-button {
@@ -223,19 +208,12 @@ onMounted(async () => {
     box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
     border-radius: 30px;
     cursor: pointer;
+    border: none;
 }
 
-.action-button span {
-    font-size: 15px;
+.button {
+    font-family: "Quicksand", sans-serif;
     font-weight: 600;
-    margin-left: 10px;
-    text-align: center;
-}
-
-.button{
-    font-family: "Quicksand", sans-serif; 
-    font-weight: 600;
-    
     display: flex;
     align-items: center;
     justify-content: center;
@@ -248,49 +226,4 @@ onMounted(async () => {
     border: none;
 }
 
-.modal {
-    font-family: "Quicksand", sans-serif;
-    font-weight: 500;
-    
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.5);
-}
-
-.modal-dialog {
-    background: white;
-    border-radius: 8px;
-}
-
-.modal-header, .modal-footer {
-    padding: 30px;
-}
-
-.modal-title {
-    font-size: 24px;
-    margin-top: 10px;
-    margin-bottom: 10px;
-}
-
-.modal-body {
-    padding: 15px 15px 0px 15px;
-}
-
-.modal-footer {
-    margin-bottom: 10px;
-}
-
-.modal-button {
-    font-family: "Quicksand", sans-serif;
-    font-weight: 500;
-    font-size: 16px;
-    
-    width: 60px;
-}
 </style>

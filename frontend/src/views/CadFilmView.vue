@@ -22,9 +22,9 @@ const route = useRoute();
 const router = useRouter();
 const userStore = useUserStore();
 
-async function updateMovie() {
+async function updateMovie(movie_id:Number) {
     try {
-        const res = await api.post(`/films/${id}`, {
+        const res = await api.put(`/films/${movie_id}`, {
             title: movie.value.title,
             releaseDate: movie.value.releaseDate,
             synopsis: movie.value.synopsis,
@@ -101,7 +101,7 @@ onMounted(async () => {
 
     <div class="profile-container">
         <div class="profile-box">
-            <form v-if="!loading" class="profile-info" @submit.prevent="id ? updateMovie() : addMovie()">
+            <form v-if="!loading" class="profile-info" @submit.prevent="id ? updateMovie(id) : addMovie()">
                 <label>
                     Titulo:
                     <input style="color: #dddddd" v-model="movie.title" type="text"/>
