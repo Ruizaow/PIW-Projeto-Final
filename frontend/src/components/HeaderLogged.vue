@@ -20,9 +20,9 @@ const userStore = useUserStore();
     
                 <RouterLink to="/films" class="menu-item">Filmes</RouterLink>
 
-                <RouterLink to="/films" class="menu-item">Lista</RouterLink>
+                <RouterLink :to="`/user/${userStore.userData.id}/films`" class="menu-item">Lista</RouterLink>
 
-                <RouterLink to="/friends" class="menu-item">Amigos</RouterLink>
+                <RouterLink :to="`/user/${userStore.userData.id}/friends`" class="menu-item">Amigos</RouterLink>
                 
                 <div class="menu-rectangle">
                     <input type="text" placeholder="Buscar..." class="search-input" />

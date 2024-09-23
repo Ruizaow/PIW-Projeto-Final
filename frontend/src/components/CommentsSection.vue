@@ -68,9 +68,6 @@ loadMovies();
                             <div class="rating">
                                 <img src="@/assets/star.png" alt="star"/>
                                 <img src="@/assets/star.png" alt="star"/>
-                                <img src="@/assets/star.png" alt="star"/>
-                                <img src="@/assets/star.png" alt="star"/>
-                                <img src="@/assets/star.png" alt="star"/>
                             </div>
                         </div>
                     </div>

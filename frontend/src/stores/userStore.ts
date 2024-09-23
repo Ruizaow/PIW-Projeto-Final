@@ -51,7 +51,6 @@ export const useUserStore = defineStore('user', () => {
         localStorage.setItem('email', authUser.email);
         localStorage.setItem('role', authUser.role.name);
         localStorage.setItem('profile_picture', authUser.profile_picture_Url);
-        localStorage.setItem('jwt', token);
     }
 
     function logout() {

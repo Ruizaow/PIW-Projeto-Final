@@ -226,4 +226,48 @@ onMounted(async () => {
     border: none;
 }
 
+.modal {
+    font-family: "Quicksand", sans-serif;
+    font-weight: 400;
+    
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+}
+
+.modal-dialog {
+    background: white;
+    border-radius: 8px;
+}
+
+.modal-header, .modal-footer {
+    padding: 30px;
+}
+
+.modal-title {
+    font-size: 24px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+.modal-body {
+    padding: 15px 15px 0px 15px;
+}
+
+.modal-footer {
+    margin-bottom: 10px;
+}
+
+.modal-button {
+    width: 60px;
+    font-family: "Quicksand", sans-serif;
+    font-weight: 500;
+    font-size: 16px;
+}
 </style>

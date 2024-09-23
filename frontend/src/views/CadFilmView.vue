@@ -22,7 +22,7 @@ const route = useRoute();
 const router = useRouter();
 const userStore = useUserStore();
 
-async function updateMovie(movie_id:Number) {
+async function updateMovie(movie_id: Number) {
     try {
         const res = await api.put(`/films/${movie_id}`, {
             title: movie.value.title,
@@ -36,8 +36,8 @@ async function updateMovie(movie_id:Number) {
         });
         movie.value = res.data.dados;
 
-        router.push(`/films/${id}`);
-
+        router.push(`/films/${movie_id}`);
+        
     } catch(error) {
         if(error instanceof AxiosError)
             console.error(error.response?.data.erro.mensagem);
