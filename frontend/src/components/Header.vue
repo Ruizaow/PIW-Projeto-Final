@@ -1,19 +1,18 @@
 <template>
     <div id="app">
         <header>
-            
             <nav class="logo-title">
-                <a href="#" class="logo">
-                <router-link><img src="@/assets/CineMundo-Logo.png" alt="CineMundo Logo" /></router-link></a>
-                    <a href="#" class="cine-mundo">CineMundo</a>
+                <RouterLink to="/"> <img src="@/assets/CineMundo-Logo.png" alt="CineMundo Logo" /> </RouterLink>
+                
+                <RouterLink to="/" class="cine-mundo"> CineMundo </RouterLink>
             </nav>
 
             <nav class="menu">
-                <router-link to="/login" class="menu-item">Login</router-link>
+                <RouterLink to="/login" class="menu-item">Login</RouterLink>
 
-                <router-link to="/films" class="menu-item">Filmes</router-link>
+                <RouterLink to="/films" class="menu-item">Filmes</RouterLink>
                 
-                <router-link to="/register" class="menu-item">Lista</router-link>
+                <RouterLink to="/register" class="menu-item">Lista</RouterLink>
             
                 <div class="menu-rectangle">
                     <input type="text" placeholder="Buscar..." class="search-input" />
@@ -45,7 +44,7 @@ header {
     align-items: center;
 }
 
-.router-link{
+.RouterLink{
     text-decoration: none;
 }
 

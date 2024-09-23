@@ -1,18 +1,18 @@
 <script setup lang="ts">
 import HeaderLogged from '@/components/HeaderLogged.vue';
+import Header from '@/components/Header.vue';
 import Footer from '@/components/Footer.vue';
 
 import { ref } from 'vue'
 import { api } from '@/api'
+import { AxiosError } from 'axios'
 import type { Movie } from '@/types'
-// import { useMovieStore } from '@/stores/MovieStore';
+import { useUserStore } from '@/stores/userStore';
 
-// Definindo variáveis reativas
-const movies = ref([] as Movie[]) // Armazena a lista de filmes
-const success = ref(false) // Indica se a operação foi bem-sucedida
+const movies = ref([] as Movie[])
+const error_message = ref('');
 
-const deleteRequested = ref(false) // Controla a exibição do modal de confirmação de exclusão
-const movieToRemove = ref<Movie>() // Armazena o filme que será removido
+const userStore = useUserStore();
 
 async function loadMovies() {
     try {
@@ -20,7 +20,9 @@ async function loadMovies() {
         movies.value = res.data.dados
             
     } catch(error) {
-        console.log("Erro ao carregar os filmes.");     
+        if(error instanceof AxiosError) {
+            error_message.value = error.response?.data.erro.mensagem;
+        }
     }
 }
 
@@ -32,86 +34,158 @@ loadMovies()
 </script>
 
 <template>
-    <HeaderLogged/>
-    
-    <div class="filmes-section">
-        <h2>Filmes</h2>
-        <div class="button-container">
-            <div class="button" @click=" ">+ Adicionar Filme</div>
-            <router-link to="/cadfilm" class="button" @click="">+ Cadastrar Filme</router-link>
-        </div>
+    <div v-if="userStore.userData.id > 0">
+        <HeaderLogged/>
 
-        <!-- Grade de posters de filmes -->
-        <div class="movies-grid">
-            <div v-for="movie in movies" :key="movie.id" class="movie-poster">
-                <RouterLink :to="`/film/${movie.id}`" style="cursor: pointer">
-                    <img :src="`${loadPoster(movie)}`"/>
-                </RouterLink>
+        <div v-if="error_message !== ''" class="alert-danger" role="alert">
+            {{ error_message }}
+        </div>
+        
+        <div class="filmes-section">
+            <h2>Filmes</h2>
+            <div v-if="userStore.role === 'Administrador'" class="button-container">
+                <RouterLink to="/films/new" class="button" @click="">+ Cadastrar Filme</RouterLink>
+            </div>
+
+            <!-- Grade de posters de filmes -->
+            <div class="movies-grid">
+                <div v-for="movie in movies" :key="movie.id" class="movie-poster">
+                    <RouterLink :to="`/films/${movie.id}`" style="cursor: pointer">
+                        <img :src="`${loadPoster(movie)}`"/>
+                    </RouterLink>
+                </div>
             </div>
         </div>
+
+        <Footer/>
     </div>
 
-    <Footer/>
+    <div v-else>
+        <div class="background-container">
+            <div class="background-image">
+                <img src="@/assets/Martin-Scorsese.png" alt="Martin-Scorsese">
+            </div>
+            <div class="overlay"></div>
+            
+            <Header />
+
+            <div v-if="error_message !== ''" class="alert-danger" role="alert">
+                {{ error_message }}
+            </div>
+            
+            <div class="filmes-section">
+                <h2>Filmes</h2>
+                <div v-if="userStore.role === 'Administrador'" class="button-container">
+                    <RouterLink to="/films/new" class="button" @click="">+ Cadastrar Filme</RouterLink>
+                </div>
+
+                <!-- Grade de posters de filmes -->
+                <div class="movies-grid">
+                    <div v-for="movie in movies" :key="movie.id" class="movie-poster">
+                        <RouterLink :to="`/films/${movie.id}`" style="cursor: pointer">
+                            <img :src="`${loadPoster(movie)}`"/>
+                        </RouterLink>
+                    </div>
+                </div>
+            </div>
+
+            <Footer/>
+        </div>
+    </div>
 </template>
 
 <style scoped>
-    /* Estilos do componente, você pode manter os estilos que você já tem */
-    .filmes-section {
-        padding: 20px;
-        display: flex;
-        flex-direction: column;
-    }
-
-    .filmes-section h2 {
-        font-family: "Pragati Narrow", sans-serif;
-        font-size: 38px;
-        text-align: start;
-        padding-left: 238px;
-    }
-
-    .movies-grid {
-        display: grid;
-        grid-template-columns: repeat(6, 160px);
-        column-gap: 10px;
-        row-gap: 15px;
-        justify-items: center;
-        justify-content: center;
-        max-width: 100%;
-    }
-
-    .movie-poster img {
-        width: 100%; /* A imagem vai ocupar toda a largura do div pai */
-        max-width: 200px; /* Limita o tamanho máximo do poster */
-        border-radius: 10px;
+.background-container {
+    position: relative;
+    z-index: 1;
 }
 
-    .filme {
-        width: 146px;
-        height: 219px;
-    }
+.background-image {
+    position: absolute;
+    width: 100vw;
+    z-index: -1;
+    opacity: 0.8;
+}
 
-    .button-container {
-        display: flex;
-        margin-top: 5px;
-        margin-bottom: 20px;
-        margin-left: 952px;
-        gap: 20px;
-    }
+.background-image img {
+    width: 100%;
+}
 
-    .button {
-        width: 180px;
-        height: 45px;
-        background: #c2a404;
-        box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
-        border-radius: 30px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 20px;
-        font-family: "Pragati Narrow", sans-serif;
-        font-weight: 300;
+.overlay {
+    position: absolute;
+    width: 100vw;
+    height: 100%;
+    background: linear-gradient(to bottom, rgba(255, 255, 255, 0), rgb(100, 100, 100, 0.6), rgb(100, 100, 100), rgb(100, 100, 100));
+    z-index: -1;
+    opacity: 1;
+}
 
-        text-decoration: none;
-        color: black;
-    }
+.alert-danger {
+    background-color: #c98383;
+    font-family: "Quicksand", sans-serif;
+    font-weight: 500;
+    font-style: medium;
+    top: 200px;
+    position: fixed;
+}
+
+
+.filmes-section {
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+}
+
+.filmes-section h2 {
+    font-family: "Pragati Narrow", sans-serif;
+    font-size: 38px;
+    text-align: start;
+    padding-left: 238px;
+}
+
+.movies-grid {
+    display: grid;
+    grid-template-columns: repeat(6, 160px);
+    column-gap: 10px;
+    row-gap: 15px;
+    justify-items: center;
+    justify-content: center;
+    max-width: 100%;
+}
+
+.movie-poster img {
+    width: 100%;
+    max-width: 200px;
+    border-radius: 10px;
+}
+
+.filme {
+    width: 146px;
+    height: 219px;
+}
+
+.button-container {
+    display: flex;
+    justify-content: center;
+    margin-top: 5px;
+    margin-bottom: 20px;
+    gap: 20px;
+}
+
+.button {
+    width: 180px;
+    height: 45px;
+    background: #c2a404;
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+    border-radius: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    font-family: "Pragati Narrow", sans-serif;
+    font-weight: 300;
+
+    text-decoration: none;
+    color: black;
+}
 </style>

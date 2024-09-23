@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import HeaderLogged from '@/components/HeaderLogged.vue';
-import Friend from '@/components/Friend.vue';
 
 import { ref, onMounted } from 'vue';
 import { api } from '@/api';

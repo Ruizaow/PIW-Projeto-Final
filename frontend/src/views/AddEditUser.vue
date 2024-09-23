@@ -14,14 +14,14 @@ const user = ref({
         name: ""
     }
 } as User);
-const roles = ref([] as Role[])
+const roles = ref([] as Role[]);
+const id = ref<Number>(-1);
 
-const error_message = ref('');   // mensagem de erro exibida ao dar erro
-const showEyeIcon = ref(false);  // variável mostrar ou não o ícone do olho
-const showPassword = ref(false); // variável de controle para mostrar ou não a senha ao clicar no ícone do olho
-const loading = ref(true);       // variável de controle para exibir quando o servidor está carregando as informações
-const userUpdated = ref(false);  // variável de controle para exibir quando o usuário foi adicionado ou atualizado com sucesso
-const id = ref<Number>(-1);      //
+const error_message = ref('');
+const showEyeIcon = ref(false);
+const showPassword = ref(false);
+const loading = ref(true);
+const userUpdated = ref(false);
 
 const editionMode = ref(false);
 const route = useRoute();
@@ -48,13 +48,16 @@ async function updateUser() {
             username: user.value.username,
             email: user.value.email,
             password: user.value.password,
-            role: user.value.role.name
+            role: user.value.role.name,
+            profile_picture_Url: user.value.profile_picture_Url
         }, {
             /* headers: {
                 Authorization: `Bearer ${userStore.jwt}`
             } */
         });
         user.value = res.data.dados;
+
+        console.log(user.value);
 
         if(userStore.userData)
             userStore.authenticaded(user.value, userStore.jwt);
@@ -66,7 +69,7 @@ async function updateUser() {
             error_message.value = error.response?.data.erro.mensagem;
 
     } finally {
-        loading.value = false
+        loading.value = false;
     }
 }
 
@@ -78,7 +81,8 @@ async function addUser() {
             username: user.value.username,
             email: user.value.email,
             password: user.value.password,
-            role: user.value.role.name
+            role: user.value.role.name,
+            profile_picture_Url: user.value.profile_picture_Url
         }, {
             headers: {
                 Authorization: `Bearer ${userStore.jwt}`
@@ -93,7 +97,7 @@ async function addUser() {
             error_message.value = error.response?.data.erro.mensagem;
 
     } finally {
-        loading.value = false
+        loading.value = false;
     }
 }
 
@@ -104,14 +108,14 @@ async function loadUser(id: Number) {
                 Authorization: `Bearer ${userStore.jwt}`
             }
         })
-        user.value = res.data.dados
+        user.value = res.data.dados;
 
     } catch(error) {
         if(error instanceof AxiosError)
             error_message.value = error.response?.data.erro.mensagem;
 
     } finally {
-        loading.value = false
+        loading.value = false;
     }
 }
 
@@ -122,26 +126,26 @@ async function loadRoles() {
                 Authorization: `Bearer ${userStore.jwt}`
             }
         })
-        roles.value = res.data.dados
+        roles.value = res.data.dados;
 
     } catch(error) {
         if(error instanceof AxiosError)
             error_message.value = error.response?.data.erro.mensagem;
 
     } finally {
-        loading.value = false
+        loading.value = false;
     }
 }
 
 onMounted(async () => {
-    id.value = Number(route.params.id)
+    id.value = Number(route.params.id);
 
     if(id.value && id.value != -1)
-        await loadUser(id.value)
+        await loadUser(id.value);
     else
-        editionMode.value = true
+        editionMode.value = true;
 
-    loadRoles()
+    loadRoles();
 })
 </script>
 
@@ -233,11 +237,20 @@ onMounted(async () => {
                         </option>
                     </select>
                 </div>
+
+                <label for="profilePicture" class="form-label">URL foto de perfil:</label>
+                <input
+                    v-model="user.profile_picture_Url"
+                    type="text"
+                    id="profilePicture"
+                    class="form-control"
+                    :disabled="!editionMode"
+                    style="margin-bottom: 50px;"/>
             </div>
 
             <div class="submit-button">
-                <input v-if="editionMode && id" type="submit" class="btn-primary" value="Atualizar" />
-                <input v-else-if="!id" type="submit" class="btn-secondary" value="Adicionar" />
+                <input v-if="editionMode && id" type="submit" class="btn-primary" value="Atualizar"/>
+                <input v-else-if="!id" type="submit" class="btn-secondary" value="Adicionar"/>
             </div>
         </form>
     </div>
@@ -352,7 +365,6 @@ onMounted(async () => {
     padding: 0.5rem;
     border: 1px solid #cccccc;
     border-radius: 0.25rem;
-    margin-bottom: 50px;
 }
 
 .btn-toggle-edit:disabled,

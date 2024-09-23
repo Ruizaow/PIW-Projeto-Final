@@ -2,17 +2,20 @@
 import { ref } from 'vue';
 import { api } from '@/api'
 import { RouterLink } from 'vue-router';
-import type { ApplicationError, Movie } from '@/types'
+import { AxiosError } from 'axios'
+import type { Movie } from '@/types'
 
 const movies = ref([] as Movie[]);
-const exception = ref<ApplicationError>()
+const error_message = ref('');
 
 async function loadMovies() {
     try {
         const res = await api.get('/films')
         movies.value = res.data.dados
     } catch(error) {
-        exception.value = error as Error
+        if(error instanceof AxiosError) {
+            error_message.value = error.response?.data.erro.mensagem;
+        }
     }
 }
 
@@ -36,16 +39,16 @@ loadMovies();
                     <path d="M59,451 L17,482.941 L59,514"/>
                 </svg>
             </div>
-            <RouterLink to="/film">
+            <RouterLink :to="`/films/${5}`">
                 <div class="poster"> <img :src="`${loadPoster(5)}`" alt="Planeta dos Macacos: O Reinado"> </div>
             </RouterLink>
-            <RouterLink to="/film">
+            <RouterLink :to="`/films/${6}`">
                 <div class="poster"> <img :src="`${loadPoster(6)}`" alt="Meu Amigo Totoro"> </div>
             </RouterLink>
-            <RouterLink to="/film">
+            <RouterLink :to="`/films/${7}`">
                 <div class="poster"> <img :src="`${loadPoster(7)}`" alt="De Volta Para o Futuro"> </div>
             </RouterLink>
-            <RouterLink to="/film">
+            <RouterLink :to="`/films/${8}`">
                 <div class="poster"> <img :src="`${loadPoster(8)}`" alt="Duna: Parte Dois"> </div>
             </RouterLink>
             <div class="shape path arrow">

@@ -2,20 +2,18 @@
 import { useUserStore } from '@/stores/userStore';
 
 const userStore = useUserStore();
-
 </script>
 
 <template>
     <div id="app">
         <header>
-            <RouterLink to="/LoggedHome">
             <nav class="logo-title">
-                <a href="#" class="logo">
-                    <img src="@/assets/CineMundo-Logo.png" alt="CineMundo Logo" /></a>
-                <a href="#" class="cine-mundo">CineMundo</a>
-            </nav></RouterLink>
-            <nav class="menu">
+                <RouterLink to="/" class="logo"> <img src="@/assets/CineMundo-Logo.png" alt="CineMundo Logo" /> </RouterLink>
 
+                <RouterLink to="/" class="cine-mundo"> CineMundo </RouterLink>
+            </nav>
+
+            <nav class="menu">
                 <RouterLink v-if="userStore.role === 'Administrador'" :to="`/users`" class="menu-item">Usuários</RouterLink>
 
                 <RouterLink :to="`/user/${userStore.userData.id}/profile`" class="menu-item">Perfil</RouterLink>

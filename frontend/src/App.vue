@@ -7,7 +7,7 @@ export default{
 <template>
   <Header/>
 
-    <router-link to="/"></router-link>
+    <RouterLink to="/"></RouterLink>
 
     <RouterView />
     

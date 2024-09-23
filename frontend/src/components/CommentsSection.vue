@@ -1,29 +1,51 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import { api } from '@/api'
-import { RouterLink } from 'vue-router';
-import type { ApplicationError, Movie } from '@/types'
+import { AxiosError } from 'axios';
+import type { User, Movie } from '@/types'
 
+const users = ref({} as User[]);
 const movies = ref([] as Movie[]);
-const exception = ref<ApplicationError>()
 
+const error_message = ref('');
+
+async function loadUsers() {
+    try {
+        const res = await api.get('/users');
+        users.value = res.data.dados;
+    } catch(error) {
+        if(error instanceof AxiosError) {
+            error_message.value = error.response?.data.erro.mensagem;
+        }
+    }
+}
 async function loadMovies() {
     try {
         const res = await api.get('/films')
         movies.value = res.data.dados
     } catch(error) {
-        exception.value = error as Error
+        if(error instanceof AxiosError) {
+            error_message.value = error.response?.data.erro.mensagem;
+        }
     }
 }
 
-function loadPoster(movie_id: number) {
+function loadPicture(id: number) {
     try {
-        return movies.value[movie_id - 1].poster.imageUrl
+        return users.value[id - 1].profile_picture_Url;
+    } catch(error) {
+        return "https://as1.ftcdn.net/v2/jpg/02/99/61/74/1000_F_299617487_fPJ8v9Onthhzwnp4ftILrtSGKs1JCrbh.jpg"
+    }
+}
+function loadPoster(id: number) {
+    try {
+        return movies.value[id - 1].poster.imageUrl
     } catch(error) {
         return "https://as1.ftcdn.net/v2/jpg/02/99/61/74/1000_F_299617487_fPJ8v9Onthhzwnp4ftILrtSGKs1JCrbh.jpg"
     }
 }
 
+loadUsers();
 loadMovies();
 </script>
 
@@ -32,10 +54,14 @@ loadMovies();
         <h2 class="title">Comentários populares da semana</h2>
         <div class="comment-section">
             <div class="comment-item">
-                <div class="poster"> <img :src="`${loadPoster(9)}`" alt="O Poderos Chefão"> </div>
+                <RouterLink :to="`/films/${9}`">
+                    <div class="poster"> <img :src="`${loadPoster(9)}`" alt="O Poderos Chefão"> </div>
+                </RouterLink>
                 <div class="comment">
                     <div class="comment-header">
-                        <div class="author-picture"></div>
+                        <RouterLink :to="`/user/${2}/profile`">
+                            <img :src="`${loadPicture(2)}`" alt="Juca Sincerão" class="author-picture">
+                        </RouterLink>
                         <div class="author-review">
                             <div class="author-comment">Juca Sincerão</div>
                             <div class="rating">
@@ -58,10 +84,14 @@ loadMovies();
 
 
             <div class="comment-item">
-                <div class="poster"> <img :src="`${loadPoster(6)}`" alt="A Viagem de Chihiro"> </div>
+                <RouterLink :to="`/films/${11}`">
+                    <div class="poster"> <img :src="`${loadPoster(11)}`" alt="A Viagem de Chihiro"> </div>
+                </RouterLink>
                 <div class="comment">
                     <div class="comment-header">
-                        <div class="author-picture"></div>
+                        <RouterLink :to="`/user/${3}/profile`">
+                            <img :src="`${loadPicture(3)}`" alt="Gerald" class="author-picture">
+                        </RouterLink>
                         <div class="author-review">
                             <div class="author-comment">Gerald</div>
                             <div class="rating">
@@ -152,7 +182,6 @@ loadMovies();
 .author-picture {
     width: 47px;
     height: 47px;
-    background-color: #b1b2b5;
     border-radius: 50%;
 }
 

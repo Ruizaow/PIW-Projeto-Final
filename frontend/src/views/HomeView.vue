@@ -1,36 +1,42 @@
-<script>
-import { defineComponent } from 'vue';
-
+<script setup lang="ts">
 import Header from '@/components/Header.vue';
 import FraseSection from '@/components/FraseSection.vue';
 import WeeklyMovies from '@/components/WeeklyMovies.vue';
 import CommentSection from '@/components/CommentsSection.vue';
 import Footer from '@/components/Footer.vue';
+import HeaderLogged from '@/components/HeaderLogged.vue';
+import PopularMovies from '@/components/PopularMovies.vue';
 
-export default defineComponent({
-    name: 'HomeView',
-    components: {
-        Header,
-        FraseSection,
-        WeeklyMovies,
-        CommentSection,
-        Footer
-    }
-})
+import { useUserStore } from '@/stores/userStore';
+
+const userStore = useUserStore();
+
 </script>
 
 <template>
-    <div class="background-container">
-        <div class="background-image">
-            <img src="@/assets/Martin-Scorsese.png" alt="Martin-Scorsese">
-        </div>
-        <div class="overlay"></div>
-
-        <Header />
-        <FraseSection />
+    <!-- Se usuário estiver logado, carrega a home com login -->
+    <div v-if="userStore.userData.id > 0">
+        <HeaderLogged/>
+        <PopularMovies />
         <WeeklyMovies />
         <CommentSection />
         <Footer />
+    </div>
+
+    <!-- Se usuário não estiver logado, carrega a home sem login -->
+    <div v-else>
+        <div class="background-container">
+            <div class="background-image">
+                <img src="@/assets/Martin-Scorsese.png" alt="Martin-Scorsese">
+            </div>
+            <div class="overlay"></div>
+
+            <Header />
+            <FraseSection />
+            <WeeklyMovies />
+            <CommentSection />
+            <Footer />
+        </div>
     </div>
 </template>
 

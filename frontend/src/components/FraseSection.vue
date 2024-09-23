@@ -1,11 +1,11 @@
 <template>
     <div class="frase">
-      <h1>Suas Aventuras Cinematográficas: Explore novos<br>
-      mundos, acompanhe seus filmes favoritos e <br>
-      compartilhe suas emoções na tela</h1>
-      <router-link to="/register" class="menu-item"><button class="btn-cadastre-se">Cadastre-se</button></router-link>
+        <h1>Suas Aventuras Cinematográficas: Explore novos<br>
+        mundos, acompanhe seus filmes favoritos e <br>
+        compartilhe suas emoções na tela</h1>
+        <RouterLink to="/register" class="menu-item"><button class="btn-cadastre-se">Cadastre-se</button></RouterLink>
     </div>
-  </template>
+</template>
   
 <style scoped>
 .frase {

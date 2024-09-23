@@ -5,8 +5,8 @@
         </div>
         <footer class="footer">
             <div class="footer-content">
-                <span class="copy">Copyright (c) 2003 CineMundo All Rights Reserved</span><br/>
-                <span>TV data from </span>
+                <span>Copyright (c) 2024 CineMundo All Rights Reserved</span><br/>
+                <span>TV data from</span>
             </div>
         </footer>
     </div>

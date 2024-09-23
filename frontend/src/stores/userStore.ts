@@ -11,7 +11,6 @@ export const useUserStore = defineStore('user', () => {
         name:                       localStorage.getItem('name') || "",
         username:                   localStorage.getItem('username') || "",
         email:                      localStorage.getItem('email') || "",
-        password:                   localStorage.getItem('password') || "",
         role: {
             id:                     Number(localStorage.getItem('roleId')),
             name:                   localStorage.getItem('role') || ""
@@ -35,11 +34,11 @@ export const useUserStore = defineStore('user', () => {
 
     loadFriendsFromStorage();
 
-    const jwt = ref('');
+    const jwt = ref(localStorage.getItem('jwt') || '');
 
     const userData = computed(() => user.value);
-
     const role = computed(() => user.value.role.name);
+
     const isAuthenticated = computed(() => jwt.value !== "");
 
     function authenticaded(authUser: User, token: string) {
@@ -52,12 +51,13 @@ export const useUserStore = defineStore('user', () => {
         localStorage.setItem('email', authUser.email);
         localStorage.setItem('role', authUser.role.name);
         localStorage.setItem('profile_picture', authUser.profile_picture_Url);
+        localStorage.setItem('jwt', token);
     }
 
     function logout() {
         jwt.value = "";
         user.value = {} as User;
-    
+
         localStorage.clear();
     }
 

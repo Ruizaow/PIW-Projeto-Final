@@ -27,8 +27,9 @@ async function loadUsers() {
             }
         });
         users.value = res.data.dados;
-    } catch (e) {
-        exception.value = e as Error;
+    
+    } catch(error) {
+        exception.value = error as Error;
     } finally {
         loading.value = false;
     }
@@ -45,9 +46,11 @@ async function removeUser() {
         const indexToRemove = users.value.findIndex(u => removedUser.id == u.id);
         users.value.splice(indexToRemove, 1);
         success.value = true;
+
     } catch(error) {
         if(isAxiosError(error) && isApplicationError(error.response?.data))
             exception.value = error.response?.data;
+        
     } finally {
         toggleModal();
     }

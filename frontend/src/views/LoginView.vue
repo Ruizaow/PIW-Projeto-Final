@@ -10,27 +10,29 @@ import { useUserStore } from '@/stores/userStore';
 
 const login = ref('');
 const password = ref('');
+const email_regex = /^[0-9a-zA-Z.]+@[a-z]+\.[a-z]+$/;
+
 const loading = ref(false);
-const error_message = ref('')
+const error_message = ref('');
 const router = useRouter();
 const userStore = useUserStore();
 
 const login_filled = ref(true);
 const password_filled = ref(true);
 
-const showEyeIcon = ref(false)  // variável mostrar ou não o ícone do olho
-const showPassword = ref(false) // variável de controle para mostrar ou não a senha ao clicar no ícone do olho
+const showEyeIcon = ref(false);
+const showPassword = ref(false);
 
 function checkFields() {
     if(login.value === '')
-        login_filled.value = false
+        login_filled.value = false;
     else
-        login_filled.value = true
+        login_filled.value = true;
 
     if(password.value === '')
-        password_filled.value = false
+        password_filled.value = false;
     else
-        password_filled.value = true
+        password_filled.value = true;
 }
 
 function toggleEyeIcon() {
@@ -44,17 +46,26 @@ async function authenticate() {
     try {
         if(login_filled.value && password_filled.value) {
             loading.value = true;
+
+            let response;
             
-            const response = await api.post('/login', {
-                login: login.value,
-                password: password.value
-            });
+            if(email_regex.test(login.value)) {
+                response = await api.post('/login', {
+                    email: login.value,
+                    password: password.value
+                });
+            } else {
+                response = await api.post('/login', {
+                    username: login.value,
+                    password: password.value
+                });
+            }
             
             const user = response.data.dados.usuário;
             const jwt = response.data.dados.chave;
             
             userStore.authenticaded(user, jwt);
-            await router.push('/loggedHome');
+            await router.push('/');
         }
     } catch(error) {
         if(error instanceof AxiosError)
@@ -93,7 +104,7 @@ async function authenticate() {
                         id="loginInput"
                         placeholder="Digite seu email ou nome de usuário">
                     <div v-if="!login_filled" class="invalid-feedback">
-                        O login é um campo obrigatório.
+                        O login — email ou nome de usuário — é um campo obrigatório.
                     </div>
                     
                     <label for="passwordInput" class="form-label"> Senha </label>
