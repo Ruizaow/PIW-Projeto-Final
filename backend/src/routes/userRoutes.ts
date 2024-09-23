@@ -7,9 +7,11 @@ import { getErrorResponse } from '../utils';
 
 const userRouter = Router();
 
-userRouter.get('/', /*authenticateToken, authorizeAdmin,*/ async(req, res) => {
+userRouter.get('/', async(req, res) => {
     try {
         const users = await userService.getAll();
+        //const usersWithoutPassword = users.map(({ password, ...userWithoutPassword }) => userWithoutPassword);
+
         res.status(200).json({
             mensagem: "Aqui está a lista de usuários.",
             dados: users
@@ -19,9 +21,11 @@ userRouter.get('/', /*authenticateToken, authorizeAdmin,*/ async(req, res) => {
     }
 });
 
-userRouter.get('/:id', /*authenticateToken, authorizeUser,*/ async(req, res) => {
+userRouter.get('/:id', async(req, res) => {
     try {
         const user = await userService.get(parseInt(req.params.id));
+        //const { password, ...userWithoutPassword } = user;
+
         res.status(200).json({ 
             mensagem: "Aqui está o usuário requisitado.",
             dados: user
@@ -70,7 +74,7 @@ userRouter.post('/', async(req, res) => {
     }
 });
 
-userRouter.put('/:id', /*authenticateToken, authorizeUser,*/ async(req, res) => {
+userRouter.put('/:id', authenticateToken, authorizeUser, async(req, res) => {
     try {
         const updatedUser = await userService.update(parseInt(req.params.id), req.body);
         res.status(200).json({
@@ -102,7 +106,7 @@ userRouter.put('/:id', /*authenticateToken, authorizeUser,*/ async(req, res) => 
     }
 });
 
-userRouter.delete('/:id', /*authenticateToken, authorizeAdmin,*/ async(req, res) => {
+userRouter.delete('/:id', authenticateToken, authorizeAdmin, async(req, res) => {
     try {
         const deletedUser = await userService.delete(parseInt(req.params.id));
         deletedUser.data.id = deletedUser.id

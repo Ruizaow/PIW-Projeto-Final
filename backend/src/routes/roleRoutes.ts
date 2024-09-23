@@ -1,21 +1,21 @@
 import { Router } from 'express'
 import { AppDataSource } from '../data-source'
 import { Role } from '../entities/user'
-import { authenticateToken } from '../middleware/authMiddleware'
+import { authenticateToken, authorizeAdmin } from '../middleware/authMiddleware'
 
 const roleRepository = AppDataSource.getRepository(Role);
 const roleRouter = Router();
 
-// roleRouter.use(authenticateToken);
+roleRouter.use(authenticateToken);
 
-roleRouter.get('/', async (req, res) => {
+roleRouter.get('/', authorizeAdmin, async (req, res) => {
     const roles = await roleRepository.find();
     res.json({
         dados: roles
     })
 })
 
-roleRouter.put('/:id', async (req, res) => {
+roleRouter.put('/:id', authorizeAdmin, async (req, res) => {
     const role = await roleRepository.findOneBy({ id: parseInt(req.params.id) })
 
     if(!role) {
@@ -45,7 +45,7 @@ roleRouter.put('/:id', async (req, res) => {
     });
 })
 
-roleRouter.delete('/:id', async (req, res) => {
+roleRouter.delete('/:id', authorizeAdmin, async (req, res) => {
     const role = await roleRepository.findOneBy({ id: parseInt(req.params.id) })
 
     if(!role) {

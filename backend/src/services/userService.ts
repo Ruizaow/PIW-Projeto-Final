@@ -21,7 +21,7 @@ export const userService = {
             relations: ['role']
         });
         if(!user) throw new Error("Usuário não identificado.");
-
+        
         return user;
     },
 
