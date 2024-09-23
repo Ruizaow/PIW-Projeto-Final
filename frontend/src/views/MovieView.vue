@@ -3,10 +3,10 @@ import HeaderLogged from '@/components/HeaderLogged.vue';
 import Header from '@/components/Header.vue';
 import Footer from '@/components/Footer.vue';
 
-import { ref } from 'vue'
-import { api } from '@/api'
-import { AxiosError } from 'axios'
-import type { Movie } from '@/types'
+import { ref } from 'vue';
+import { api } from '@/api';
+import { AxiosError } from 'axios';
+import type { Movie } from '@/types';
 import { useUserStore } from '@/stores/userStore';
 
 const movies = ref([] as Movie[])
@@ -17,7 +17,7 @@ const userStore = useUserStore();
 async function loadMovies() {
     try {
         const res = await api.get('/films');
-        movies.value = res.data.dados
+        movies.value = res.data.dados;
             
     } catch(error) {
         if(error instanceof AxiosError) {
@@ -44,7 +44,7 @@ loadMovies()
         <div class="filmes-section">
             <h2>Filmes</h2>
             <div v-if="userStore.role === 'Administrador'" class="button-container">
-                <RouterLink to="/films/new" class="button" @click="">+ Cadastrar Filme</RouterLink>
+                <RouterLink to="/films/entry/new" class="button" @click="">+ Cadastrar Filme</RouterLink>
             </div>
 
             <!-- Grade de posters de filmes -->
@@ -76,7 +76,7 @@ loadMovies()
             <div class="filmes-section">
                 <h2>Filmes</h2>
                 <div v-if="userStore.role === 'Administrador'" class="button-container">
-                    <RouterLink to="/films/new" class="button" @click="">+ Cadastrar Filme</RouterLink>
+                    <RouterLink to="/films/entry/new" class="button" @click="">+ Cadastrar Filme</RouterLink>
                 </div>
 
                 <!-- Grade de posters de filmes -->

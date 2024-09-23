@@ -2,7 +2,7 @@
 import HeaderLogged from '@/components/HeaderLogged.vue';
 import Footer from '@/components/Footer.vue';
 
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue';
 import { api } from '@/api';
 import { AxiosError } from 'axios';
 import type { Movie } from '@/types';
@@ -14,12 +14,38 @@ const movie = ref({
         imageUrl: ""
     }
 } as Movie);
+const id = ref<Number>(-1);
 
 const loading = ref(false);
 
 const route = useRoute();
 const router = useRouter();
 const userStore = useUserStore();
+
+async function updateMovie() {
+    try {
+        const res = await api.post(`/films/${id}`, {
+            title: movie.value.title,
+            releaseDate: movie.value.releaseDate,
+            synopsis: movie.value.synopsis,
+            poster: movie.value.poster.imageUrl,
+        }, {
+            headers: {
+                Authorization: `Bearer ${userStore.jwt}`
+            }
+        });
+        movie.value = res.data.dados;
+
+        router.push(`/films/${id}`);
+
+    } catch(error) {
+        if(error instanceof AxiosError)
+            console.error(error.response?.data.erro.mensagem);
+
+    } finally {
+        loading.value = false;
+    }
+}
 
 async function addMovie() {
     try {
@@ -47,6 +73,27 @@ async function addMovie() {
         loading.value = false
     }
 }
+
+async function loadMovie(id: Number) {
+    try {
+        const res = await api.get(`/films/${id}`);
+        movie.value = res.data.dados;
+
+    } catch(error) {
+        if(error instanceof AxiosError)
+            console.error(error.response?.data.erro.mensagem);
+
+    } finally {
+        loading.value = false;
+    }
+}
+
+onMounted(async () => {
+    id.value = Number(route.params.id);
+
+    if(id.value && id.value != -1)
+        await loadMovie(id.value);
+})
 </script>
 
 <template>
@@ -54,7 +101,7 @@ async function addMovie() {
 
     <div class="profile-container">
         <div class="profile-box">
-            <form v-if="!loading" class="profile-info" @submit.prevent="addMovie">
+            <form v-if="!loading" class="profile-info" @submit.prevent="id ? updateMovie() : addMovie()">
                 <label>
                     Titulo:
                     <input style="color: #dddddd" v-model="movie.title" type="text"/>
@@ -74,7 +121,8 @@ async function addMovie() {
                 </label>
   
                 <div class="profile-actions">
-                    <input class="button" type="submit" value="Cadastrar Filme"/>
+                    <input v-if="id" class="button" type="submit" value="Editar Filme"/>
+                    <input v-else class="button" type="submit" value="Cadastrar Filme"/>
                 </div>
             </form>
             <p v-else class="alert-loading">

@@ -2,7 +2,7 @@
 import { ref } from 'vue';
 import { api } from '@/api'
 import { AxiosError } from 'axios';
-import type { User, Movie } from '@/types'
+import type { User, Movie } from '@/types';
 
 const users = ref({} as User[]);
 const movies = ref([] as Movie[]);
@@ -13,6 +13,7 @@ async function loadUsers() {
     try {
         const res = await api.get('/users');
         users.value = res.data.dados;
+    
     } catch(error) {
         if(error instanceof AxiosError) {
             error_message.value = error.response?.data.erro.mensagem;
@@ -21,8 +22,8 @@ async function loadUsers() {
 }
 async function loadMovies() {
     try {
-        const res = await api.get('/films')
-        movies.value = res.data.dados
+        const res = await api.get('/films');
+        movies.value = res.data.dados;
     } catch(error) {
         if(error instanceof AxiosError) {
             error_message.value = error.response?.data.erro.mensagem;

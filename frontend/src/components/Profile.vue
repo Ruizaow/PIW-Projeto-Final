@@ -22,7 +22,7 @@ const userStore = useUserStore();
 
 async function addFriend(user_id: Number, friend_id: Number) {
     try {
-        const res = await api.post(`/users/${user_id}/friends/${friend_id}`, {}, {
+        const res = await api.post(`/users/${user_id}/friends/${friend_id}`, {
             headers: {
                 Authorization: `Bearer ${userStore.jwt}`
             }
@@ -65,6 +65,8 @@ function loadPicture() {
     else
         return "https://as1.ftcdn.net/v2/jpg/02/99/61/74/1000_F_299617487_fPJ8v9Onthhzwnp4ftILrtSGKs1JCrbh.jpg"
 }
+
+console.log(userStore.jwt)
 
 onMounted(async () => {
     id.value = Number(route.params.id);

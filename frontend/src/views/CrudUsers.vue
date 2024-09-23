@@ -21,15 +21,12 @@ const userStore = useUserStore()
 
 async function loadUsers() {
     try {
-        const res = await api.get('/users', {
-            headers: {
-                Authorization: `Bearer ${userStore.jwt}`
-            }
-        });
+        const res = await api.get('/users');
         users.value = res.data.dados;
     
     } catch(error) {
         exception.value = error as Error;
+        
     } finally {
         loading.value = false;
     }

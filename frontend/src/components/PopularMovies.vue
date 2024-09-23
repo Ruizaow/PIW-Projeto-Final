@@ -1,17 +1,17 @@
 <script setup lang="ts">
 import { ref } from 'vue';
-import { api } from '@/api'
-import { RouterLink } from 'vue-router';
-import { AxiosError } from 'axios'
-import type { Movie } from '@/types'
+import { api } from '@/api';
+import { RouterLink } from 'vue-router';;
+import { AxiosError } from 'axios';
+import type { Movie } from '@/types';
 
 const movies = ref([] as Movie[]);
 const error_message = ref('');
 
 async function loadMovies() {
     try {
-        const res = await api.get('/films')
-        movies.value = res.data.dados
+        const res = await api.get('/films');
+        movies.value = res.data.dados;
     } catch(error) {
         if(error instanceof AxiosError)
             error_message.value = error.response?.data.erro.mensagem;
@@ -20,7 +20,7 @@ async function loadMovies() {
 
 function loadPoster(movie_id: number) {
     try {
-        return movies.value[movie_id - 1].poster.imageUrl
+        return movies.value[movie_id - 1].poster.imageUrl;
     } catch(error) {
         return "https://as1.ftcdn.net/v2/jpg/02/99/61/74/1000_F_299617487_fPJ8v9Onthhzwnp4ftILrtSGKs1JCrbh.jpg"
     }

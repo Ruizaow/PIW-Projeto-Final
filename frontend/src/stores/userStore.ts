@@ -34,7 +34,7 @@ export const useUserStore = defineStore('user', () => {
 
     loadFriendsFromStorage();
 
-    const jwt = ref(localStorage.getItem('jwt') || '');
+    const jwt = ref('');
 
     const userData = computed(() => user.value);
     const role = computed(() => user.value.role.name);

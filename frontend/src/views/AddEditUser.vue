@@ -51,13 +51,11 @@ async function updateUser() {
             role: user.value.role.name,
             profile_picture_Url: user.value.profile_picture_Url
         }, {
-            /* headers: {
+            headers: {
                 Authorization: `Bearer ${userStore.jwt}`
-            } */
+            }
         });
         user.value = res.data.dados;
-
-        console.log(user.value);
 
         if(userStore.userData)
             userStore.authenticaded(user.value, userStore.jwt);
@@ -103,11 +101,7 @@ async function addUser() {
 
 async function loadUser(id: Number) {
     try {
-        const res = await api.get(`/users/${id}`, {
-            headers: {
-                Authorization: `Bearer ${userStore.jwt}`
-            }
-        })
+        const res = await api.get(`/users/${id}`);
         user.value = res.data.dados;
 
     } catch(error) {

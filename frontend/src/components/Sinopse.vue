@@ -56,7 +56,7 @@ async function removeMovie(id: Number) {
     try {
         const res = await api.delete(`/films/${id}`, {
             headers: {
-               // Authorization: `Bearer ${movieStore.jwt}`
+               Authorization: `Bearer ${userStore.jwt}`
             }
         });
         console.log(res.data.dados)
@@ -116,6 +116,13 @@ onMounted(async () => {
                 </div>
 
                 <form>
+                    <!-- Botão para editar o filme (Disponível apenas para administrador logados) -->
+                    <div v-if="userStore.role === 'Administrador'" class="action-button">
+                        <RouterLink :to="`/films/entry/${id}`">
+                            <input class="button" @click="toggleModal" type="button" value="Editar Filme"/>
+                        </RouterLink>
+                    </div>
+
                     <!-- Botão para remover o filme (Disponível apenas para administrador logados) -->
                     <div v-if="userStore.role === 'Administrador'" class="action-button">
                         <input class="button" @click="toggleModal" type="button" value="Remover Filme"/>

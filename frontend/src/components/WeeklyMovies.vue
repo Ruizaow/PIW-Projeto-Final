@@ -1,17 +1,17 @@
 <script setup lang="ts">
 import { ref } from 'vue';
-import { api } from '@/api'
+import { api } from '@/api';
 import { RouterLink } from 'vue-router';
-import { AxiosError } from 'axios'
-import type { Movie } from '@/types'
+import { AxiosError } from 'axios';
+import type { Movie } from '@/types';
 
 const movies = ref([] as Movie[]);
 const error_message = ref('');
 
 async function loadMovies() {
     try {
-        const res = await api.get('/films')
-        movies.value = res.data.dados
+        const res = await api.get('/films');
+        movies.value = res.data.dados;
     } catch(error) {
         if(error instanceof AxiosError) {
             error_message.value = error.response?.data.erro.mensagem;
