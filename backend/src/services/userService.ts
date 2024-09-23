@@ -91,9 +91,6 @@ export const userService = {
             if(userData.id != id)
                 throw new Error("O id do usuário não pode ser alterado.");
         }
-
-        console.log(userData)
-        console.log(userData.role)
         
         let role: any = userData.role
         if(role !== 'Usuário padrão' && role !== 'Usuário premium' && role !== 'Administrador')
@@ -110,11 +107,12 @@ export const userService = {
         if(userData.email != null && !regex.email.test(userData.email))             throw new Error("Email inválido. Digite seu endereço, seguido de @, domínio e .com");
         if(userData.password != null && !regex.password.test(userData.password))    throw new Error("Senha inválida. Digite no mínimo 8 caracteres, com pelo menos um dígito e uma letra.");
     
-        user.name = userData.name || user.name
-        user.username = userData.username || user.username
-        user.email = userData.email || user.email
-        user.password = userData.password || user.password
-        user.role = roleInDB
+        user.name = userData.name || user.name;
+        user.username = userData.username || user.username;
+        user.email = userData.email || user.email;
+        user.password = userData.password || user.password;
+        user.role = roleInDB;
+        user.profile_picture_Url = userData.profile_picture_Url || user.profile_picture_Url
 
         return await userRepository.save(user);
     },
