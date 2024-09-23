@@ -29,7 +29,7 @@ movieRouter.get('/:id', async(req, res) => {
     }
 });
 
-movieRouter.post('/', authenticateToken, authorizeAdmin, async(req, res) => {
+movieRouter.post('/', /*authenticateToken, authorizeAdmin,*/ async(req, res) => {
     try {
         const movie = await movieService.create(req.body);
         res.status(200).json({
@@ -49,7 +49,7 @@ movieRouter.post('/', authenticateToken, authorizeAdmin, async(req, res) => {
     }
 });
 
-movieRouter.put('/:id', authenticateToken, authorizeAdmin, async(req, res) => {
+movieRouter.put('/:id', /*authenticateToken, authorizeAdmin,*/ async(req, res) => {
     try {
         const updatedMovie = await movieService.update(parseInt(req.params.id), req.body);
         res.status(200).json({
@@ -69,7 +69,7 @@ movieRouter.put('/:id', authenticateToken, authorizeAdmin, async(req, res) => {
     }
 });
 
-movieRouter.delete('/:id', authenticateToken, authorizeAdmin, async(req, res) => {
+movieRouter.delete('/:id',/* authenticateToken, authorizeAdmin,*/ async(req, res) => {
     try {
         const deletedMovie = await movieService.delete(parseInt(req.params.id));
         deletedMovie.data.id = deletedMovie.id
