@@ -19,7 +19,7 @@ friendRouter.get('/:user_id/friends', async(req, res) => {
     }
 });
 
-friendRouter.post('/:user_id/friends/:friend_id', authenticateToken, authorizeUser, async(req, res) => {
+friendRouter.post('/:user_id/friends/:friend_id', /* authenticateToken, authorizeUser, */ async(req, res) => {
     try {
         const user_id = parseInt(req.params.user_id,);
         const friend_id = parseInt(req.params.friend_id);
@@ -45,7 +45,7 @@ friendRouter.post('/:user_id/friends/:friend_id', authenticateToken, authorizeUs
     }
 });
 
-friendRouter.delete('/:user_id/friends/:friend_id', authenticateToken, authorizeUser, async(req, res) => {
+friendRouter.delete('/:user_id/friends/:friend_id', /*  authenticateToken, authorizeUser, */ async(req, res) => {
     try {
         const user_id = parseInt(req.params.user_id,);
         const friend_id = parseInt(req.params.friend_id);

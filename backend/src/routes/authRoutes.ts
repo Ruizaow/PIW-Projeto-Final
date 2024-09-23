@@ -16,7 +16,16 @@ authRouter.post('/', async(req, res) => {
         res.status(200).json({
             mensagem: message,
             dados: {
-                usuário: userData.usuário,
+                usuário: {
+                    id: userData.usuário.id,
+                    name: userData.usuário.name,
+                    username: userData.usuário.username,
+                    email: userData.usuário.email,
+                    role: {
+                        id: userData.usuário.role.id,
+                        name: userData.usuário.role.name
+                    }
+                },
                 chave: userData.chave
             }
         });

@@ -1,5 +1,5 @@
 import { Entity, PrimaryGeneratedColumn, Column, OneToMany, ManyToOne, ManyToMany, JoinColumn, JoinTable } from 'typeorm';
-import { Movie, Review } from './movie';
+import { Movie } from './movie';
 
 @Entity()
 export class Role {
@@ -53,7 +53,4 @@ export class User {
 
     @OneToMany(() => Movie, (movie) => movie.user)
     movies: Movie[];
-
-    @OneToMany(() => Review, (review) => review.user)
-    reviews: Review[];
 }

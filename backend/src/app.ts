@@ -22,7 +22,7 @@ async function startServer() {
 }
 
 const app = express();
-const PORT = 8000;
+const PORT = 4000;
 
 app.use(cors())
 

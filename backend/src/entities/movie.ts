@@ -27,31 +27,7 @@ export class Movie {
   @OneToOne(() => Poster, { nullable: true, cascade: true, onDelete: "CASCADE" })
   @JoinColumn()
   poster: Poster;
-
-  @OneToMany(() => Review, (review) => review.movie)
-  @JoinColumn()
-  reviews: Review[];
   
   @ManyToOne(() => User, (user) => user.movies)
   user: User;
-}
-
-@Entity()
-export class Review {
-  @PrimaryGeneratedColumn()
-  id: number;
-
-  @Column()
-  rating: number;
-
-  @Column()
-  review: string;
-
-  @ManyToOne(() => User, (user) => user.reviews)
-  @JoinColumn()
-  user: User;
-
-  @ManyToOne(() => Movie, (movie) => movie.reviews)
-  @JoinColumn()
-  movie: Movie;
 }
