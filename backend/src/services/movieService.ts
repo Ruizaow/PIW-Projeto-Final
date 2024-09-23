@@ -30,21 +30,16 @@ export const movieService = {
         movieData.id = createNewId(await movieRepository.find());
 
         const poster: any = movieData.poster
-        try {
-            const validateUrl = new URL(poster);
-            let posterInDB = await posterRepository.findOneBy({ imageUrl: poster });
 
-            if(!posterInDB) {
-                posterInDB = posterRepository.create({
-                    id: createNewId(await posterRepository.find()),
-                    imageUrl: poster
-                });
-                await posterRepository.save(posterInDB);
-            }
-            movieData.poster = posterInDB;
-        } catch(error) {
-            throw new Error('URL do pôster inválida');
+        let posterInDB = await posterRepository.findOneBy({ imageUrl: poster });
+        if(!posterInDB) {
+            posterInDB = posterRepository.create({
+                id: createNewId(await posterRepository.find()),
+                imageUrl: poster
+            });
+            await posterRepository.save(posterInDB);
         }
+        movieData.poster = posterInDB;
 
         const movie = movieRepository.create(movieData);
         return await movieRepository.save(movie);
@@ -59,6 +54,23 @@ export const movieService = {
 
         if(movieData.id != null && movieData.id != id)
             throw new Error("O id do filme não pode ser alterado.");
+
+        const poster: any = movieData.poster
+
+        let posterInDB = await posterRepository.findOneBy({ imageUrl: poster });
+        if(!posterInDB) {
+            posterInDB = posterRepository.create({
+                id: createNewId(await posterRepository.find()),
+                imageUrl: poster
+            });
+            await posterRepository.save(posterInDB);
+        }
+        movieData.poster = posterInDB;
+
+        movie.title = movieData.title || movie.title;
+        movie.releaseDate = movieData.releaseDate || movie.releaseDate;
+        movie.synopsis = movieData.synopsis || movie.synopsis;
+        movie.poster = movieData.poster;
 
         await movieRepository.update(movie.id, movieData);
         return await movieRepository.findOne({ 

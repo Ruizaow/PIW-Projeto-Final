@@ -111,7 +111,7 @@ export const userService = {
         user.username = userData.username || user.username;
         user.email = userData.email || user.email;
         user.password = userData.password || user.password;
-        user.role = roleInDB;
+        user.role = userData.role;
         user.profile_picture_Url = userData.profile_picture_Url || user.profile_picture_Url
 
         return await userRepository.save(user);
