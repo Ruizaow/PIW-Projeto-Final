@@ -13,24 +13,24 @@ const user = ref({
     role: {
         name: ""
     }
-} as User)
+} as User);
 const roles = ref([] as Role[])
 
-const error_message = ref('')   // mensagem de erro exibida ao dar erro
-const showEyeIcon = ref(false)  // variável mostrar ou não o ícone do olho
-const showPassword = ref(false) // variável de controle para mostrar ou não a senha ao clicar no ícone do olho
-const loading = ref(true)       // variável de controle para exibir quando o servidor está carregando as informações
-const userUpdated = ref(false)  // variável de controle para exibir quando o usuário foi adicionado ou atualizado com sucesso
-const id = ref<Number>(-1)      //
+const error_message = ref('');   // mensagem de erro exibida ao dar erro
+const showEyeIcon = ref(false);  // variável mostrar ou não o ícone do olho
+const showPassword = ref(false); // variável de controle para mostrar ou não a senha ao clicar no ícone do olho
+const loading = ref(true);       // variável de controle para exibir quando o servidor está carregando as informações
+const userUpdated = ref(false);  // variável de controle para exibir quando o usuário foi adicionado ou atualizado com sucesso
+const id = ref<Number>(-1);      //
 
-const editionMode = ref(false)
-const route = useRoute()
-const router = useRouter()
+const editionMode = ref(false);
+const route = useRoute();
+const router = useRouter();
 
-const userStore = useUserStore()
+const userStore = useUserStore();
 
 function toggleEdit() {
-    editionMode.value = !editionMode.value
+    editionMode.value = !editionMode.value;
 }
 
 function toggleEyeIcon() {
@@ -54,7 +54,11 @@ async function updateUser() {
                 Authorization: `Bearer ${userStore.jwt}`
             } */
         });
-        user.value = res.data.dados
+        user.value = res.data.dados;
+
+        if(userStore.userData)
+            userStore.authenticaded(user.value, userStore.jwt);
+
         userUpdated.value = true
 
     } catch(error) {
@@ -213,20 +217,22 @@ onMounted(async () => {
                     </span>
                 </div>
                 
-                <label for="role" class="form-label">Papel de usuário:</label>
-                <select
-                    v-model="user.role.name"
-                    id="role"
-                    class="form-select"
-                    :disabled="!editionMode">
-                    <option
-                        v-for="role in roles"
-                        :key="role.name"
-                        :selected="user && user.role.name == role.name"
-                        :value="role.name">
-                            {{ role.name }}
-                    </option>
-                </select>
+                <div v-if="userStore.userData.role.name === 'Administrador'">
+                    <label for="role" class="form-label">Papel de usuário:</label>
+                    <select
+                        v-model="user.role.name"
+                        id="role"
+                        class="form-select"
+                        :disabled="!editionMode">
+                        <option
+                            v-for="role in roles"
+                            :key="role.name"
+                            :selected="user && user.role.name == role.name"
+                            :value="role.name">
+                                {{ role.name }}
+                        </option>
+                    </select>
+                </div>
             </div>
 
             <div class="submit-button">

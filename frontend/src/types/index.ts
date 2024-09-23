@@ -8,7 +8,6 @@ export type User = {
     profile_picture_Url: string
     friends: User[]
     movies: Movie[]
-    reviews: Review[]
 }
   
 export type Role = {
@@ -22,18 +21,11 @@ export type Movie = {
     releaseDate: number
     synopsis: string
     poster: Poster
-    reviews: Review[]
 }
 
 export type Poster = {
     id: number
     imageUrl: string
-}
-
-export type Review = {
-    id: number
-    rating: number
-    review: string
 }
   
 export interface ApplicationError {

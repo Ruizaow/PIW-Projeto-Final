@@ -2,13 +2,10 @@
 import { ref } from 'vue';
 import { api } from '@/api'
 import { RouterLink } from 'vue-router';
-import { useMovieStore } from '@/stores/movieStore'
 import type { ApplicationError, Movie } from '@/types'
 
 const movies = ref([] as Movie[]);
 const exception = ref<ApplicationError>()
-
-const movieStore = useMovieStore()
 
 async function loadMovies() {
     try {

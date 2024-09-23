@@ -1,16 +1,34 @@
-<script>
-    import { defineComponent } from 'vue';
+<script setup lang="ts">
+import HeaderLogged from '@/components/HeaderLogged.vue';
+import Footer from '@/components/Footer.vue';
 
-    import HeaderLogged from '@/components/HeaderLogged.vue';
-    import Footer from '@/components/Footer.vue';
+import { ref } from 'vue'
+import { api } from '@/api'
+import type { Movie } from '@/types'
+// import { useMovieStore } from '@/stores/MovieStore';
 
-    export default defineComponent({
-        name: 'MovieView',
-        components: {
-            HeaderLogged,
-            Footer,
-    },
-  });
+// Definindo variáveis reativas
+const movies = ref([] as Movie[]) // Armazena a lista de filmes
+const success = ref(false) // Indica se a operação foi bem-sucedida
+
+const deleteRequested = ref(false) // Controla a exibição do modal de confirmação de exclusão
+const movieToRemove = ref<Movie>() // Armazena o filme que será removido
+
+async function loadMovies() {
+    try {
+        const res = await api.get('/films');
+        movies.value = res.data.dados
+            
+    } catch(error) {
+        console.log("Erro ao carregar os filmes.");     
+    }
+}
+
+function loadPoster(movie: Movie) {
+    return movie.poster.imageUrl
+}
+
+loadMovies()
 </script>
 
 <template>
@@ -19,20 +37,22 @@
     <div class="filmes-section">
         <h2>Filmes</h2>
         <div class="button-container">
-            <!--<div class="button"><span>+</span><span> Adicionar Filme</span></div>
-            <div class="button"><span>+</span><span> Cadastrar Filme</span></div>-->
-            <div class="button" @click="addmovie">+ Adicionar Filme</div>
-            <div class="button" @click="cadramovie">+ Cadastrar Filme</div>
+            <div class="button" @click=" ">+ Adicionar Filme</div>
+            <router-link to="/cadfilm" class="button" @click="">+ Cadastrar Filme</router-link>
         </div>
-        <div class="filmes-grid">
-            <img v-for="i in 12" :key="i" class="filme" :src="`https://via.placeholder.com/146x219`" :alt="`Filme ${i}`" />
+
+        <!-- Grade de posters de filmes -->
+        <div class="movies-grid">
+            <div v-for="movie in movies" :key="movie.id" class="movie-poster">
+                <RouterLink :to="`/film/${movie.id}`" style="cursor: pointer">
+                    <img :src="`${loadPoster(movie)}`"/>
+                </RouterLink>
+            </div>
         </div>
     </div>
 
     <Footer/>
 </template>
-
-
 
 <style scoped>
     /* Estilos do componente, você pode manter os estilos que você já tem */
@@ -49,15 +69,21 @@
         padding-left: 238px;
     }
 
-    .filmes-grid {
+    .movies-grid {
         display: grid;
         grid-template-columns: repeat(6, 160px);
-        column-gap: 4px;
+        column-gap: 10px;
         row-gap: 15px;
         justify-items: center;
         justify-content: center;
         max-width: 100%;
     }
+
+    .movie-poster img {
+        width: 100%; /* A imagem vai ocupar toda a largura do div pai */
+        max-width: 200px; /* Limita o tamanho máximo do poster */
+        border-radius: 10px;
+}
 
     .filme {
         width: 146px;
@@ -68,7 +94,7 @@
         display: flex;
         margin-top: 5px;
         margin-bottom: 20px;
-        padding-left: 850px;
+        margin-left: 952px;
         gap: 20px;
     }
 
@@ -84,5 +110,8 @@
         font-size: 20px;
         font-family: "Pragati Narrow", sans-serif;
         font-weight: 300;
+
+        text-decoration: none;
+        color: black;
     }
 </style>

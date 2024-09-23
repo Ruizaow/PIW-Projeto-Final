@@ -114,13 +114,13 @@ function togglePasswordVisibility() {
 .registration-box h1 {
     font-size: 36px;
     color: black;
-    font-family: "Pragati Narrow", sans-serif;
+    font-family: "Quicksand", sans-serif; 
 }
 
 .registration-box label {
     font-size: 24px;
     color: black;
-    font-family: "Pragati Narrow", sans-serif;
+    font-family: "Quicksand", sans-serif; 
     width: 100%;
     display: flex;
     flex-direction: column;
@@ -150,7 +150,7 @@ function togglePasswordVisibility() {
 .registration-box .checkbox-label {
     font-size: 16px;
     color: black;
-    font-family: "Pragati Narrow", sans-serif;
+    font-family: "Quicksand", sans-serif; 
 }
 
 .registration-box .submit-button {
@@ -161,12 +161,13 @@ function togglePasswordVisibility() {
     border-radius: 19px;
     color: black;
     font-size: 32px;
-    font-family: "Pragati Narrow", sans-serif;
+    font-family: "Quicksand", sans-serif; 
     text-align: center;
     line-height: 48.69px;
     cursor: pointer;
     border: none;
     transition: background 0.3s;
+
 }
 
 .registration-box .submit-button:hover {

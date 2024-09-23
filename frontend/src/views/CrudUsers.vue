@@ -49,17 +49,17 @@ async function removeUser() {
         if(isAxiosError(error) && isApplicationError(error.response?.data))
             exception.value = error.response?.data;
     } finally {
-        toogleModal();
+        toggleModal();
     }
 }
 
 function askToDelete(id: number) {
     const index = users.value.findIndex(u => u.id === id)
     userToRemove.value = users.value[index]
-    toogleModal()
+    toggleModal()
 }
 
-function toogleModal() {
+function toggleModal() {
     deleteRequested.value = !deleteRequested.value
 }
 

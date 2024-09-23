@@ -1,20 +1,30 @@
+<script setup lang="ts">
+import { useUserStore } from '@/stores/userStore';
+
+const userStore = useUserStore();
+
+</script>
+
 <template>
     <div id="app">
         <header>
-            <router-link to="/LoggedHome">
+            <RouterLink to="/LoggedHome">
             <nav class="logo-title">
                 <a href="#" class="logo">
                     <img src="@/assets/CineMundo-Logo.png" alt="CineMundo Logo" /></a>
                 <a href="#" class="cine-mundo">CineMundo</a>
-            </nav></router-link>
+            </nav></RouterLink>
             <nav class="menu">
-                <router-link to="/profile" class="menu-item">Perfil</router-link> <!-- Aqui redireciona para Login -->
+
+                <RouterLink v-if="userStore.role === 'Administrador'" :to="`/users`" class="menu-item">Usuários</RouterLink>
+
+                <RouterLink :to="`/user/${userStore.userData.id}/profile`" class="menu-item">Perfil</RouterLink>
     
-                <router-link to="/films" class="menu-item">Filmes</router-link>
+                <RouterLink to="/films" class="menu-item">Filmes</RouterLink>
 
-                <router-link to="/films" class="menu-item">Lista</router-link>
+                <RouterLink to="/films" class="menu-item">Lista</RouterLink>
 
-                <router-link to="/friend" class="menu-item">Amigos</router-link>
+                <RouterLink to="/friends" class="menu-item">Amigos</RouterLink>
                 
                 <div class="menu-rectangle">
                     <input type="text" placeholder="Buscar..." class="search-input" />
@@ -58,9 +68,9 @@ header {
 .cine-mundo {
     padding-left: 21px;
     font-family: 'Ranchers', sans-serif;
-    text-decoration: none;
     font-size: 50px;
     color: black;
+    text-decoration: none;
 }
 
 .menu {

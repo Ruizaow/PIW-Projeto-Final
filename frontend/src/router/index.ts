@@ -17,11 +17,12 @@ const routes = [
     { path: '/login', name: 'login',component: LoginView },
     { path: '/register', name: 'register', component: RegisterView },
     { path: '/loggedHome', name: 'loggedHome', component: Loggedhome },
-    { path: '/profile', name: 'Profile', component: ProfileView },
-    { path: '/films', name: 'Movie', component: MovieView },
+    { path: '/user/:id/profile', name: 'profile', component: ProfileView },
+    { path: '/user/:id/friends', name: 'userFriends', component: FriendView },
+    { path: '/user/:id/films', name: 'userMovies', component: MovieView },
+    { path: '/films', name: 'movies', component: MovieView },
     { path: '/cadfilm', name: 'cadastro', component: CadFilmView },
-    { path: '/friend', name: 'friend', component: FriendView },
-    { path: '/film', name: 'sinopse', component: SinopseView },
+    { path: '/film/:id', name: 'sinopse', component: SinopseView },
     { path: '/users', name: 'users', component: CrudUsers },
     { path: '/users/:id', name: 'addEditUser', component: AddEditUser }
 ]

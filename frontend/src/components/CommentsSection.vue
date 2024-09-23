@@ -1,11 +1,38 @@
+<script setup lang="ts">
+import { ref } from 'vue';
+import { api } from '@/api'
+import { RouterLink } from 'vue-router';
+import type { ApplicationError, Movie } from '@/types'
+
+const movies = ref([] as Movie[]);
+const exception = ref<ApplicationError>()
+
+async function loadMovies() {
+    try {
+        const res = await api.get('/films')
+        movies.value = res.data.dados
+    } catch(error) {
+        exception.value = error as Error
+    }
+}
+
+function loadPoster(movie_id: number) {
+    try {
+        return movies.value[movie_id - 1].poster.imageUrl
+    } catch(error) {
+        return "https://as1.ftcdn.net/v2/jpg/02/99/61/74/1000_F_299617487_fPJ8v9Onthhzwnp4ftILrtSGKs1JCrbh.jpg"
+    }
+}
+
+loadMovies();
+</script>
+
 <template>
     <div class="container">
         <h2 class="title">Comentários populares da semana</h2>
         <div class="comment-section">
             <div class="comment-item">
-                <div class="poster">
-                    <img src="" alt="Poster do filme">
-                </div>
+                <div class="poster"> <img :src="`${loadPoster(9)}`" alt="O Poderos Chefão"> </div>
                 <div class="comment">
                     <div class="comment-header">
                         <div class="author-picture"></div>
@@ -29,10 +56,9 @@
                 </div>
             </div>
 
+
             <div class="comment-item">
-                <div class="poster">
-                    <img src="" alt="Poster do filme">
-                </div>
+                <div class="poster"> <img :src="`${loadPoster(6)}`" alt="A Viagem de Chihiro"> </div>
                 <div class="comment">
                     <div class="comment-header">
                         <div class="author-picture"></div>
@@ -100,7 +126,7 @@
     gap: 10px;
 }
 
-.poster {
+.poster img {
     background-color: #b1b2b5;
     border: 1px solid black;
     border-radius: 12px;

@@ -12,11 +12,6 @@ export const useMovieStore = defineStore('movie', () => {
             id:                 Number(localStorage.getItem('posterId')),
             imageUrl:           localStorage.getItem('poster') || ""
         },
-        reviews: [{
-            id:                 Number(localStorage.getItem('reviewId')),
-            rating:             Number(localStorage.getItem('reviewRating')),
-            review:             localStorage.getItem('review') || ""
-        }]
     });
 
     const poster = computed(() => movie.value.poster.imageUrl)

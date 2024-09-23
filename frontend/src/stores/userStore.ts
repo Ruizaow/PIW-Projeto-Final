@@ -6,7 +6,7 @@ import { useMovieStore } from '@/stores/movieStore'
 export const useUserStore = defineStore('user', () => {
     const movieStore = useMovieStore();
 
-    const user = ref<User>({
+    const user = ref<Omit<User, 'password'>>({
         id:                         Number(localStorage.getItem('id')),
         name:                       localStorage.getItem('name') || "",
         username:                   localStorage.getItem('username') || "",
@@ -19,11 +19,6 @@ export const useUserStore = defineStore('user', () => {
         profile_picture_Url:        localStorage.getItem('profile_picture') || "",
         friends: [],
         movies: [movieStore.movie],
-        reviews: [{
-            id:                     Number(localStorage.getItem('reviewId')),
-            rating:                 Number(localStorage.getItem('reviewRating')),
-            review:                 localStorage.getItem('review') || ""
-        }]
     });
 
     function addFriend(newFriend: User) {
@@ -40,27 +35,31 @@ export const useUserStore = defineStore('user', () => {
 
     loadFriendsFromStorage();
 
-    const jwt = ref('')
+    const jwt = ref('');
 
-    const role = computed(() => user.value.role.name)
-    const isAuthenticated = computed(() => jwt.value !== "")
+    const userData = computed(() => user.value);
+
+    const role = computed(() => user.value.role.name);
+    const isAuthenticated = computed(() => jwt.value !== "");
 
     function authenticaded(authUser: User, token: string) {
         user.value = authUser;
         jwt.value = token;
         
         localStorage.setItem('id', authUser.id.toString());
+        localStorage.setItem('name', authUser.name);
         localStorage.setItem('username', authUser.username);
         localStorage.setItem('email', authUser.email);
         localStorage.setItem('role', authUser.role.name);
+        localStorage.setItem('profile_picture', authUser.profile_picture_Url);
     }
 
     function logout() {
-        jwt.value = ""
-        user.value = {} as User
+        jwt.value = "";
+        user.value = {} as User;
     
-        localStorage.clear()
+        localStorage.clear();
     }
 
-    return { user, addFriend, jwt, role, isAuthenticated, authenticaded, logout };
+    return { user, addFriend, jwt, userData, role, isAuthenticated, authenticaded, logout };
 });
