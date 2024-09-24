@@ -19,6 +19,8 @@ Um site feito para registrar, avaliar e criar listas de filmes vistos pelo usuá
 - Filme
 - Papel
 - Amigos
+- Lista de Amigos
+- Lista de Filmes
 
 ## Principais funcionalidades da aplicação
 Usuário não registrado poderá ver os filmes, as listas de filmes e listas de amigos feitos por usuários registrados.
