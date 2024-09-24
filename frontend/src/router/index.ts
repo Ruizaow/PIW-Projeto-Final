@@ -49,12 +49,12 @@ const routes = [
         path: '/films/entry/:id',
         name: 'cadastro',
         component: CadFilmView,
-        /* meta: { requiresAuth: true } */ },
+        meta: { requiresAuth: true } },
     { 
         path: '/users',
         name: 'users',
         component: CrudUsers,
-        /* meta: { requiresAuth: true } */ },
+        meta: { requiresAuth: true } },
     { 
         path: '/users/:id',
         name: 'addEditUser',
