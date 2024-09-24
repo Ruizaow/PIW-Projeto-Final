@@ -1,6 +1,30 @@
-# Site de Filmes
+# Site de Filmes - CineMundo
 
-Um site feito para registrar, avaliar e criar listas de filmes vistos pelo usuário.
+Um site feito para acessar um catálogo de filmes e suas informações.
+
+Para acessar a aplicação, primeiro entre na sua pasta e execute o backend:
+```
+cd backend
+npm install
+npm run dev
+```
+
+Depois o frontend:
+```
+cd frontend
+npm install
+npm run dev
+```
+
+Execute os dois ao mesmo tempo para garantir que as informações da página sejam carregadas corretamente.
+Após isso, faça cadastro, seguido do login para executar as funcionalidades de usuário registrado na aplicação.
+Caso deseje utilizar o site como usuário administrador, acesse o login:
+```
+senhor_cinema
+cinema123
+```
+
+Aproveite!
 
 ## Membros da equipe
 
@@ -34,7 +58,7 @@ O adminstrador do site pode:
 ### Frontend:
 - VueJs v3.0, Vue-Router, Pinia e Axios
 ### Backend
-- NodeJs, Express, TypeORM e Jwt
+- NodeJs, Express, TypeORM e JWT
 
 ## Operaçãoes implementadas para cada entidade da aplicação
 <table>
