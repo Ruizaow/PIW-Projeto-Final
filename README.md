@@ -34,7 +34,7 @@ O adminstrador do site pode:
 ### Frontend:
 - VueJs v3.0, Vue-Router, Pinia e Axios
 ### Backend
-- Express, TypeORM e Jwt
+- NodeJs, Express, TypeORM e Jwt
 
 ## Operaçãoes implementadas para cada entidade da aplicação
 <table>
