@@ -57,9 +57,6 @@ async function updateUser() {
         });
         user.value = res.data.dados;
 
-        if(userStore.userData)
-            userStore.authenticaded(user.value, userStore.jwt);
-
         userUpdated.value = true
 
     } catch(error) {
