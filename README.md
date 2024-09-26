@@ -17,8 +17,9 @@ npm run dev
 ```
 
 Execute os dois ao mesmo tempo para garantir que as informações da página sejam carregadas corretamente.
-Após isso, faça cadastro, seguido do login para executar as funcionalidades de usuário registrado na aplicação.
-Caso deseje utilizar o site como usuário administrador, acesse o login:
+Após isso, copie o link 'localhost' gerado do frontend em seu navegador para acessar a aplicação.
+Já na página inicial, faça cadastro, seguido do login para liberar acesso às funcionalidades de usuário registrado.
+Caso deseje utilizar o site como usuário administrador, e, assim, ter acesso a mais funcionalidades, acesse o login:
 ```
 senhor_cinema
 cinema123
@@ -93,9 +94,9 @@ O adminstrador do site pode:
   <tr>
     <td>Lista de Amigos</td>
     <td>X</td>
+    <td>X</td>
     <td></td>
-    <td></td>
-    <td></td>
+    <td>X</td>
   </tr>
 </table>
 
