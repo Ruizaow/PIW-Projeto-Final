@@ -7,7 +7,7 @@ import { useUserStore } from '@/stores/userStore';
 import { useRoute, useRouter } from 'vue-router';
 
 const movies = ref([] as Movie[])
-const success = ref(false)
+const movieExists = ref(true)
 
 const userStore = useUserStore();
 
@@ -34,22 +34,30 @@ async function loadMovie(id: Number) {
         const res = await api.get(`/films/${id}`);
         movie.value = res.data.dados;
 
-        title.value = movie.value.title
-        releaseDate.value = JSON.stringify(movie.value.releaseDate)
-        synopsis.value = movie.value.synopsis
+        title.value = movie.value.title;
+        releaseDate.value = JSON.stringify(movie.value.releaseDate);
+        synopsis.value = movie.value.synopsis;
 
     } catch(error) {
-        if(error instanceof AxiosError) {
-            error_message.value = error.response?.data.erro.mensagem;
-        }
+        movieExists.value = false;
     }
 }
 
-function loadPoster() { //
-    if(movie.value.poster.imageUrl !== "")
-        return movie.value.poster.imageUrl;
+function isValidUrl(poster: string) {
+    try {
+        const validUrl = new URL(poster);
+    } catch(error) {
+        return false;  
+    }
+
+  return true;
+}
+
+function loadPoster() {
+    if(isValidUrl(movie.value.poster.imageUrl))
+        return movie.value.poster.imageUrl
     else
-        return "https://as1.ftcdn.net/v2/jpg/02/99/61/74/1000_F_299617487_fPJ8v9Onthhzwnp4ftILrtSGKs1JCrbh.jpg"
+        return "https://as1.ftcdn.net/v2/jpg/02/99/61/74/1000_F_299617487_fPJ8v9Onthhzwnp4ftILrtSGKs1JCrbh.jpg";
 }
 
 async function removeMovie(id: Number) {
@@ -59,11 +67,9 @@ async function removeMovie(id: Number) {
                Authorization: `Bearer ${userStore.jwt}`
             }
         });
-        console.log(res.data.dados)
         const removedMovie: Movie = res.data.dados;
         const indexToRemove = movies.value.findIndex(m => removedMovie.id === m.id);
         movies.value.splice(indexToRemove, 1);
-        success.value = true;
         router.push('/films');
 
     } catch(error) {
@@ -93,11 +99,11 @@ onMounted(async () => {
 
 <template>
     <div class="profile-container">
-        <div class="film-box">
+        <div v-if="movieExists" class="film-box">
             <div class="film-info">
                 <div class="film-title">
                     {{ title }}
-                    <span class="year">{{ releaseDate }}</span>
+                    <span class="year">({{ releaseDate }})</span>
                 </div>
                 <img class="film-image" :src="`${loadPoster()}`" alt="Poster" />
             </div>
@@ -108,26 +114,39 @@ onMounted(async () => {
                 </div>
             </div>
 
-            <div class="button-container" >
-                <!-- Botão para remover o filme (Disponível apenas para usuários (padrões ou administradores) logados) -->
-                <div v-if="userStore.userData.id > 0" class="button" @click="">
-                    <span class="plus">+</span>
-                    <span>Adicionar Filme à Lista</span>
+            <div v-if="userStore.userData.id > 0" class="button-container">
+                <!-- Botão para editar o filme (Disponível apenas para administrador logados) -->
+                <div v-if="userStore.role === 'Administrador'">
+                    <RouterLink :to="`/films/entry/${id}`" style="text-decoration: none">
+                        <input class="button" @click="toggleModal" type="button" value="Editar Filme"/>
+                    </RouterLink>
                 </div>
 
-                <form>
-                    <!-- Botão para editar o filme (Disponível apenas para administrador logados) -->
-                    <div v-if="userStore.role === 'Administrador'" class="action-button">
-                        <RouterLink :to="`/films/entry/${id}`">
-                            <input class="button" @click="toggleModal" type="button" value="Editar Filme"/>
-                        </RouterLink>
-                    </div>
+                <!-- Botão para remover o filme (Disponível apenas para administrador logados) -->
+                <div v-if="userStore.role === 'Administrador'">
+                    <input class="button" @click="toggleModal" type="button" value="Remover Filme"/>
+                </div>
 
-                    <!-- Botão para remover o filme (Disponível apenas para administrador logados) -->
-                    <div v-if="userStore.role === 'Administrador'" class="action-button">
-                        <input class="button" @click="toggleModal" type="button" value="Remover Filme"/>
-                    </div>
-                </form>
+                <!-- Botão para remover o filme (Disponível apenas para usuários (padrões ou administradores) logados) -->
+                <div v-if="userStore.role === 'Administrador'" @click="">
+                    <span class="button">+ Adicionar Filme à Lista</span>
+                </div>
+                <div v-else style="margin-left: 90px;" @click="">
+                    <span class="button">+ Adicionar Filme à Lista</span>
+                </div>
+            </div>
+        </div>
+        <div v-else class="film-box">
+            <div class="film-info">
+                <div class="film-title">
+                    <span class="year"></span>
+                </div>
+                <img class="film-image" :src="`${loadPoster()}`" alt="Poster" />
+            </div>
+            <div class="film-details">
+                <div class="synopsis">
+                    <h2 style="font-weight: 500; margin-right: 587px;">Filme não encontrado.</h2>
+                </div>
             </div>
         </div>
     </div>
@@ -163,6 +182,7 @@ onMounted(async () => {
   
 .film-box {
     width: 1200px; /* Largura do box do filme */
+    font-size: 20px;
     background: #525151;
     border-radius: 20px;
     padding: 30px;
@@ -173,10 +193,11 @@ onMounted(async () => {
   
 .film-info {
     flex: 2; /* Controle de tamanho da sinopse */
-    color: white;
+    color: #dcdcdc;
     display: flex;
     flex-direction: column;
     justify-content: flex-start; /* Começa com o texto */
+    gap: 10px;
 }
   
 .film-image {
@@ -186,41 +207,34 @@ onMounted(async () => {
   
 .synopsis {
     font-size: 20px;
+    color: #dcdcdc;
     text-align: justify;
     line-height: 1.5;
     margin-bottom: 30px; /* Espaço abaixo da sinopse */
 }
-  
+
 .button-container {
     display: flex;
-    justify-content: flex-start; /* Alinha os botões à esquerda */
-    gap: 20px; /* Espaço entre os botões */
-    margin-top: 30px; /* Espaço acima dos botões */
-}
-
-.action-button {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 207px;
-    height: 52px;
-    background: #C2A404;
-    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
-    border-radius: 30px;
-    cursor: pointer;
-    border: none;
+    position: absolute;
+    gap: 10px;
+    margin-top: 400px;
+    margin-left: 560px;
 }
 
 .button {
     font-family: "Quicksand", sans-serif;
     font-weight: 600;
+    font-size: 16px;
+    
+    width: 207px;
+    height: 52px;
+    
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 207px;
-    height: 52px;
+
     background: #C2A404;
-    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.5);
     border-radius: 30px;
     cursor: pointer;
     border: none;

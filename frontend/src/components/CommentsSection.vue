@@ -32,18 +32,10 @@ async function loadMovies() {
 }
 
 function loadPicture(id: number) {
-    try {
-        return users.value[id - 1].profile_picture_Url;
-    } catch(error) {
-        return "https://as1.ftcdn.net/v2/jpg/02/99/61/74/1000_F_299617487_fPJ8v9Onthhzwnp4ftILrtSGKs1JCrbh.jpg"
-    }
+    return users.value[id - 1]?.profile_picture_Url || "https://as1.ftcdn.net/v2/jpg/02/99/61/74/1000_F_299617487_fPJ8v9Onthhzwnp4ftILrtSGKs1JCrbh.jpg";
 }
 function loadPoster(id: number) {
-    try {
-        return movies.value[id - 1].poster.imageUrl
-    } catch(error) {
-        return "https://as1.ftcdn.net/v2/jpg/02/99/61/74/1000_F_299617487_fPJ8v9Onthhzwnp4ftILrtSGKs1JCrbh.jpg"
-    }
+    return movies.value[id - 1]?.poster?.imageUrl || "https://as1.ftcdn.net/v2/jpg/02/99/61/74/1000_F_299617487_fPJ8v9Onthhzwnp4ftILrtSGKs1JCrbh.jpg";
 }
 
 loadUsers();

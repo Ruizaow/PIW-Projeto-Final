@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import HeaderLogged from '@/components/HeaderLogged.vue';
-import Header from '@/components/Header.vue';
-import Footer from '@/components/Footer.vue';
+import MyHeader from '@/components/Header.vue';
+import MyFooter from '@/components/Footer.vue';
 import Sinopse from '@/components/Sinopse.vue';
 
 import { useUserStore } from '@/stores/userStore';
@@ -16,7 +16,7 @@ const userStore = useUserStore();
             
             <Sinopse />
         
-            <Footer />
+            <MyFooter />
         </div>
 
         <div v-else>
@@ -26,11 +26,11 @@ const userStore = useUserStore();
                 </div>
                 <div class="overlay"></div>
                 
-                <Header />
+                <MyHeader />
 
                 <Sinopse />
 
-                <Footer/>
+                <MyFooter/>
             </div>
         </div>
 </template>

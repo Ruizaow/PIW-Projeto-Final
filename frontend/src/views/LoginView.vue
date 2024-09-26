@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import Header from '@/components/Header.vue';
-import Footer from '@/components/Footer.vue';
+import MyHeader from '@/components/Header.vue';
+import MyFooter from '@/components/Footer.vue';
 
 import { ref } from 'vue'
 import { api } from '@/api';
@@ -84,7 +84,7 @@ async function authenticate() {
         </div>
         <div class="overlay"></div>
         
-        <Header />
+        <MyHeader />
 
         <div class="login-container">
             <div class="login-box">
@@ -143,7 +143,7 @@ async function authenticate() {
             </div>
         </div>
 
-        <Footer />
+        <MyFooter />
     </div>
 </template>
 

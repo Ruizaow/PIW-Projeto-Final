@@ -11,6 +11,7 @@ import SinopseView from '@/views/SinopseView.vue'
 import CadFilmView from '@/views/CadFilmView.vue'
 import CrudUsers from '@/views/CrudUsers.vue'
 import AddEditUser from '@/views/AddEditUser.vue'
+import PageNotFound from '@/views/PageNotFound.vue'
 
 const routes = [
     { 
@@ -58,7 +59,11 @@ const routes = [
     { 
         path: '/users/:id',
         name: 'addEditUser',
-        component: AddEditUser
+        component: AddEditUser },
+    { 
+        path: '/:pathMatch(.*)*',
+        name: 'PageNotFound',
+        component: PageNotFound
     }
 ]
 

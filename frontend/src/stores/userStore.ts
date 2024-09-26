@@ -17,22 +17,8 @@ export const useUserStore = defineStore('user', () => {
         },
         profile_picture_Url:        localStorage.getItem('profile_picture') || "",
         friends: [],
-        movies: [movieStore.movie],
+        movies: [movieStore.movie]
     });
-
-    function addFriend(newFriend: User) {
-        user.value.friends.push(newFriend);
-        localStorage.setItem('friends', JSON.stringify(user.value.friends));
-    }
-
-    function loadFriendsFromStorage() {
-        const storedFriends = localStorage.getItem('friends');
-        if (storedFriends) {
-            user.value.friends = JSON.parse(storedFriends);
-        }
-    }
-
-    loadFriendsFromStorage();
 
     const jwt = ref('');
 
@@ -42,7 +28,10 @@ export const useUserStore = defineStore('user', () => {
     const isAuthenticated = computed(() => jwt.value !== "");
 
     function authenticaded(authUser: User, token: string) {
-        user.value = authUser;
+        user.value = {
+            ...authUser,
+            friends: authUser.friends || []
+        };
         jwt.value = token;
         
         localStorage.setItem('id', authUser.id.toString());
@@ -60,5 +49,5 @@ export const useUserStore = defineStore('user', () => {
         localStorage.clear();
     }
 
-    return { user, addFriend, jwt, userData, role, isAuthenticated, authenticaded, logout };
+    return { user, jwt, userData, role, isAuthenticated, authenticaded, logout };
 });

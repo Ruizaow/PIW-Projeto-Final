@@ -112,7 +112,6 @@ async function loadUser(id: Number) {
 
 async function loadRoles() {
     try {
-        console.log(userStore.jwt);
         const res = await api.get(`/roles`, {
             headers: {
                 Authorization: `Bearer ${userStore.jwt}`

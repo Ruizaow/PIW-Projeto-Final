@@ -4,25 +4,38 @@ import { api } from '@/api';
 import { AxiosError } from 'axios';
 import type { User } from '@/types';
 import { useUserStore } from '@/stores/userStore';
-import { useRoute, useRouter } from 'vue-router';
+import { useRoute } from 'vue-router';
 
 const user = ref({} as User);
+const userExists = ref(true)
 
 const id = ref<Number>(-1);
 const name = ref('');
 const username = ref('');
 const email = ref('');
 
+const success_message = ref('');
 const error_message = ref('');
 const friendRequest = ref(false);
+const removeRequest = ref(false);
 
 const route = useRoute();
 
 const userStore = useUserStore();
 
+async function loadStoredFriends(user_id: number) {
+    try {
+        const res = await api.get(`/users/${user_id}/friends`);
+        user.value.friends = res.data.dados;
+    
+    } catch (error) {
+        console.error('Erro ao carregar a lista de amigos:', error);
+    }
+}
+
 async function addFriend(user_id: Number, friend_id: Number) {
     try {
-        const res = await api.post(`/users/${user_id}/friends/${friend_id}`, {
+        const res = await api.post(`/users/${user_id}/friends/${friend_id}`, {}, {
             headers: {
                 Authorization: `Bearer ${userStore.jwt}`
             }
@@ -30,17 +43,52 @@ async function addFriend(user_id: Number, friend_id: Number) {
         
         user.value.friends = res.data.dados.friends;
 
-        console.log("Amigo adicionado com sucesso");
+        success_message.value = res.data.mensagem;
+        error_message.value = "";
         
     } catch(error) {
         if(error instanceof AxiosError) {
             error_message.value = error.response?.data.erro.mensagem;
+            success_message.value = "";
         }
     }
 }
 
-function toggleModal() {
+async function removeFriend(user_id: Number, friend_id: Number) {
+    try {
+        const res = await api.delete(`/users/${user_id}/friends/${friend_id}`, {
+            headers: {
+                Authorization: `Bearer ${userStore.jwt}`
+            }
+        });
+
+        user.value.friends = user.value.friends.filter(friend => friend.id !== friend_id);
+
+        success_message.value = res.data.mensagem;
+        error_message.value = "";
+        
+    } catch(error) {
+        if(error instanceof AxiosError) {
+            error_message.value = error.response?.data.erro.mensagem;
+            success_message.value = "";
+        }
+    }
+}
+
+function isFriendAdd(friend_id: Number) {
+    let alreadyFriend = false;
+
+    if(user.value && user.value.friends)
+        alreadyFriend = user.value.friends.some(f => f.id === friend_id);
+
+    return alreadyFriend;
+}
+
+function toggleAddModal() {
     friendRequest.value = !friendRequest.value;
+}
+function toggleRemoveModal() {
+    removeRequest.value = !removeRequest.value;
 }
 
 async function loadUser(id: Number) {
@@ -53,9 +101,7 @@ async function loadUser(id: Number) {
         email.value = user.value.email;
 
     } catch(error) {
-        if(error instanceof AxiosError) {
-            error_message.value = error.response?.data.erro.mensagem;
-        }
+        userExists.value = false;
     }
 }
 
@@ -66,28 +112,29 @@ function loadPicture() {
         return "https://as1.ftcdn.net/v2/jpg/02/99/61/74/1000_F_299617487_fPJ8v9Onthhzwnp4ftILrtSGKs1JCrbh.jpg"
 }
 
-console.log(userStore.jwt)
-
 onMounted(async () => {
     id.value = Number(route.params.id);
 
     if (id.value && id.value !== -1) {
-        console.log("Carregando usuário com ID:", id.value);
         await loadUser(id.value);
-    } else {
-        console.log("ID inválido ou não encontrado:", id.value);
+        await loadStoredFriends(userStore.userData.id);
     }
 });
 </script>
 
 <template>
     <div class="profile-container">
-        <div class="profile-box">
+        <div v-if="userExists && error_message !== ''" class="alert-danger">
+            {{ error_message }}
+            <button @click="error_message = ''" type="button" class="btn-close-danger">&times;</button>
+        </div>
 
-            <div v-if="error_message !== ''" class="alert-danger" role="alert">
-                {{ error_message }}
-            </div>
-            
+        <div v-if="userExists && success_message !== ''" class="alert-success">
+            {{ success_message }}
+            <button @click="success_message = ''" type="button" class="btn-close-success">&times;</button>
+        </div>
+
+        <div v-if="userExists" class="profile-box">
             <img :src="`${loadPicture()}`" alt="Foto de Perfil" />
     
             <div class="profile-info">
@@ -111,10 +158,13 @@ onMounted(async () => {
                             :to="`/users/${id}`"
                             class="button">Editar Perfil
                         </RouterLink>
-                        <div
-                            v-else
-                            @click="toggleModal()"
-                            class="button">Adicionar como amigo
+                        <div v-else class="button">
+                            <label v-if="!isFriendAdd(id)" @click="toggleAddModal()" style="font-size: 20px; text-align: center; cursor: pointer;">
+                                Adicionar como amigo
+                            </label>
+                            <label v-else @click="toggleRemoveModal()" style="font-size: 20px; text-align: center; cursor: pointer;">
+                                Remover amigo
+                            </label>
                         </div>
                     </div>
 
@@ -129,6 +179,11 @@ onMounted(async () => {
                 </div>
             </div>
         </div>
+        <div v-else>
+            <div>
+                <h1 class="notfound">Usuário não encontrado.</h1>
+            </div>
+        </div>
 
         <div class="modal" v-if="friendRequest">
             <div class="modal-dialog">
@@ -140,8 +195,25 @@ onMounted(async () => {
                         <p>Deseja adicionar este usuário como amigo?</p>
                     </div>
                     <div class="modal-footer">
-                        <button @click="addFriend(userStore.userData.id, id)" type="button" class="modal-button">Sim</button>
+                        <button @click="addFriend(userStore.userData.id, id); friendRequest=false;" type="button" class="modal-button">Sim</button>
                         <button @click="friendRequest=false" type="button" class="modal-button" style="margin-left: 10px">Não</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal" v-if="removeRequest">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">REMOVER AMIGO</h5>
+                    </div>
+                    <div class="modal-body">
+                        <p>Deseja remover este usuário da lista de amigos?</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button @click="removeFriend(userStore.userData.id, id); removeRequest=false;" type="button" class="modal-button">Sim</button>
+                        <button @click="removeRequest=false" type="button" class="modal-button" style="margin-left: 10px">Não</button>
                     </div>
                 </div>
             </div>
@@ -150,22 +222,48 @@ onMounted(async () => {
 </template>
 
 <style scoped>
+.alert-success {
+    background-color: rgb(8, 160, 8);
+    font-family: "Quicksand", sans-serif;
+    font-weight: 500;
+    font-style: medium;
+    top: 200px;
+}
+
+.btn-close-success {
+    position: absolute;
+    background-color: rgb(8, 160, 8);
+    border: none;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
 .alert-danger {
     background-color: #c98383;
     font-family: "Quicksand", sans-serif;
     font-weight: 500;
     font-style: medium;
     top: 200px;
-    position: fixed;
+}
+
+.btn-close-danger {
+    position: absolute;
+    background-color: #c98383;
+    border: none;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
 }
 
 .profile-container {
-    margin-top: 40px;
     display: flex;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
+
     flex: 1;
-    padding-top: 80px;
+    margin-top: 120px;
 }
 
 .profile-box {
@@ -216,19 +314,22 @@ onMounted(async () => {
 }
 
 .button {
-    width: 200px;
-    height: 50px;
-    background: #c2a404;
-    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
-    border-radius: 30px;
+    font-family: "Quicksand", sans-serif; 
+    font-weight: 600;
+    font-size: 22px;
+    color: black;
+
     display: flex;
     justify-content: center;
     align-items: center;
+
+    width: 200px;
+    height: 50px;
+
+    background: #c2a404;
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+    border-radius: 30px;
     cursor: pointer;
-    font-size: 22px;
-    font-family: "Quicksand", sans-serif; 
-    font-weight: 600;
-    color: black;
     text-decoration: none;
 
     transition: background 0.3s;
@@ -236,6 +337,13 @@ onMounted(async () => {
 
 .button:hover {
     background: #b29903;
+}
+
+.notfound {
+    font-family: "Quicksand", sans-serif; 
+    font-weight: 500;
+    margin-top: 100px;
+    margin-bottom: 100px;
 }
 
 .modal {

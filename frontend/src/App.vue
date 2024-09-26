@@ -5,13 +5,13 @@ export default{
 </script>
 
 <template>
-  <Header/>
+  <MyHeader/>
 
-    <RouterLink F></RouterLink>
+    <RouterLink></RouterLink>
 
     <RouterView />
     
-  <Footer />
+  <MyFooter />
 </template>
 
 <style>

@@ -17,6 +17,7 @@ const movie = ref({
 const id = ref<Number>(-1);
 
 const loading = ref(false);
+const error_message = ref('');
 
 const route = useRoute();
 const router = useRouter();
@@ -40,7 +41,7 @@ async function updateMovie(movie_id: Number) {
         
     } catch(error) {
         if(error instanceof AxiosError)
-            console.error(error.response?.data.erro.mensagem);
+            error_message.value = error.response?.data.erro.mensagem;
 
     } finally {
         loading.value = false;
@@ -67,7 +68,7 @@ async function addMovie() {
 
     } catch(error) {
         if(error instanceof AxiosError)
-            console.error(error.response?.data.erro.mensagem);
+            error_message.value = error.response?.data.erro.mensagem;
     
     } finally {
         loading.value = false
@@ -100,8 +101,17 @@ onMounted(async () => {
     <HeaderLogged />
 
     <div class="profile-container">
+        <div v-if="error_message !== ''" class="alert-danger">
+            {{ error_message }}
+            <button @click="error_message = ''" type="button" class="btn-close">&times;</button>
+        </div>
+
+        <p v-if="loading" class="alert-loading">
+            Esperando resposta do servidor.
+        </p>
+
         <div class="profile-box">
-            <form v-if="!loading" class="profile-info" @submit.prevent="id ? updateMovie(id) : addMovie()">
+            <form class="profile-info" @submit.prevent="id ? updateMovie(id) : addMovie()">
                 <label>
                     Titulo:
                     <input style="color: #dddddd" v-model="movie.title" type="text"/>
@@ -116,7 +126,7 @@ onMounted(async () => {
                 </label>
 
                 <label>
-                    URL Poster:
+                    URL Pôster:
                     <input style="color: #dddddd" v-model="movie.poster.imageUrl" type="text"/>
                 </label>
   
@@ -125,9 +135,6 @@ onMounted(async () => {
                     <input v-else class="button" type="submit" value="Cadastrar Filme"/>
                 </div>
             </form>
-            <p v-else class="alert-loading">
-                Esperando resposta do servidor.
-            </p>
         </div>
     </div>
 
@@ -135,29 +142,53 @@ onMounted(async () => {
 </template>
 
 <style scoped>
-.alert-loading {
-    padding-top: 85px;
+.alert-danger {
     font-family: "Quicksand", sans-serif;
     font-weight: 500;
     font-style: medium;
+    margin-bottom: 10px;
+
+    color: red;
+    background-color: #f8d7da;
+    padding: 1rem;
+    border: 1px solid #f5c6cb;
+    border-radius: 0.25rem;
+    width: 1200px;
+    margin-left: 29px;
+}
+
+.btn-close {
+    position: absolute;
+    background: none;
+    border: none;
+    font-size: 18px;
+    margin-top: -1px;
+    margin-left: 1070px;
+    cursor: pointer;
+}
+
+.alert-loading {
+    font-family: "Quicksand", sans-serif;
+    font-weight: 500;
+    font-style: medium;
+    margin-bottom: 10px;
 }
 
 /* ---------- SEÇÃO DE PERFIL ---------- */
 .profile-container {
+    padding-top: 80px;
     display: flex;
-    justify-content: center;
+    flex-direction: column;
     align-items: center;
     flex: 1;
-    padding-top: 80px;
-    
 }
 
 .profile-box {
-    width: 1200px; /* Aumenta a largura do perfil */
     display: flex;
     align-items: center;
-    gap: 80px; /* Aumenta o espaço entre a imagem e o conteúdo */
-    padding-left: 50px;
+
+    width: 1200px;
+    margin-top: -80px;
 }
 
 .profile-box img {

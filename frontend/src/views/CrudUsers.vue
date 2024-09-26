@@ -42,6 +42,7 @@ async function removeUser() {
         const removedUser: User = res.data.dados;
         const indexToRemove = users.value.findIndex(u => removedUser.id == u.id);
         users.value.splice(indexToRemove, 1);
+        
         success.value = true;
 
     } catch(error) {
@@ -104,7 +105,7 @@ loadUsers()
             <tbody>
                 <tr v-for="user in users" :key="user.id">
                     <td>{{ user.id }}</td>
-                    <td>{{ user.name }}</td>
+                    <td> <RouterLink :to="`/user/${user.id}/profile`">{{ user.name }} </RouterLink> </td>
                     <td>{{ user.username }}</td>
                     <td>{{ user.email }}</td>
                     <td>{{ user.role.name }}</td>

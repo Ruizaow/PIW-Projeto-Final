@@ -2,28 +2,30 @@
 import { ref } from 'vue';
 import { api } from '@/api';
 import { RouterLink } from 'vue-router';;
-import { AxiosError } from 'axios';
 import type { Movie } from '@/types';
 
 const movies = ref([] as Movie[]);
-const error_message = ref('');
+const id_values = ref<number[]>([]);
 
 async function loadMovies() {
-    try {
-        const res = await api.get('/films');
-        movies.value = res.data.dados;
-    } catch(error) {
-        if(error instanceof AxiosError)
-            error_message.value = error.response?.data.erro.mensagem;
-    }
+    const res = await api.get('/films');
+    movies.value = res.data.dados;
+
+    id_values.value = getRandomNumbers(movies.value.length);
 }
 
-function loadPoster(movie_id: number) {
-    try {
-        return movies.value[movie_id - 1].poster.imageUrl;
-    } catch(error) {
-        return "https://as1.ftcdn.net/v2/jpg/02/99/61/74/1000_F_299617487_fPJ8v9Onthhzwnp4ftILrtSGKs1JCrbh.jpg"
-    }
+function loadPoster(id: number) {
+    return movies.value[id]?.poster?.imageUrl || "https://as1.ftcdn.net/v2/jpg/02/99/61/74/1000_F_299617487_fPJ8v9Onthhzwnp4ftILrtSGKs1JCrbh.jpg";
+}
+
+function getRandomNumbers(limit: number): number[] {
+    const numbers = Array.from({ length: limit }, (_, i) => i + 1);
+
+    const elementsToReturn = numbers.length < 4 ? numbers.length : 4;
+    
+    const shuffled = numbers.sort(() => 0.5 - Math.random());
+
+    return shuffled.slice(0, elementsToReturn);
 }
 
 loadMovies();
@@ -38,19 +40,12 @@ loadMovies();
                     <path d="M59,451 L17,482.941 L59,514"/>
                 </svg>
             </div>
-            <!--<div class="poster"> <img :src="`${loadPoster(5)}`" alt="Planeta dos Macacos: O Reinado"> </div>-->
-            <RouterLink :to="`/films/${10}`">
-                <div class="poster"><img :src="`${loadPoster(10)}`" alt="O Poderos Chefinho"></div>
-            </RouterLink>
-            <RouterLink :to="`/films/${8}`">
-                <div class="poster"><img :src="`${loadPoster(8)}`" alt="Duna Part 02"></div>
-            </RouterLink>
-            <RouterLink :to="`/films/${3}`">
-                <div class="poster"><img :src="`${loadPoster(3)}`" alt="Tubarão"></div>
-            </RouterLink>
-            <RouterLink :to="`/films/${12}`">
-                <div class="poster"><img :src="`${loadPoster(12)}`" alt="Silvio"></div>
-            </RouterLink>
+            
+            <div v-for="id in id_values" :key="id" class="poster">
+                <RouterLink v-if="movies[id - 1]" :to="`/films/${id}`">
+                    <img :src="`${loadPoster(id - 1)}`" :alt="`${movies[id - 1].title}`">
+                </RouterLink>
+            </div>
 
             <div class="shape path arrow">
                 <svg width="32" height="64" viewBox="1135 774 48.405 63.928">
@@ -87,11 +82,15 @@ loadMovies();
 }
 
 .poster {
+    font-family: "Quicksand", sans-serif;
+    font-weight: 500;
+    font-style: medium;
+
     width: 224px;
     height: 340px;
     border-radius: 12px;
     background-color: #b1b2b5;
-    border: 1px solid black;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.3);
     text-align: center;
 }
 
@@ -99,5 +98,9 @@ loadMovies();
     width: 100%;
     height: 100%;
     border-radius: 12px;
+}
+
+.arrow{
+    cursor: pointer;
 }
 </style>

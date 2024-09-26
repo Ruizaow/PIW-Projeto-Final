@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import Header from '@/components/Header.vue';
+import MyHeader from '@/components/Header.vue';
 import FraseSection from '@/components/FraseSection.vue';
 import WeeklyMovies from '@/components/WeeklyMovies.vue';
 import CommentSection from '@/components/CommentsSection.vue';
-import Footer from '@/components/Footer.vue';
+import MyFooter from '@/components/Footer.vue';
 import HeaderLogged from '@/components/HeaderLogged.vue';
 import PopularMovies from '@/components/PopularMovies.vue';
 
@@ -20,7 +20,7 @@ const userStore = useUserStore();
         <PopularMovies />
         <WeeklyMovies />
         <CommentSection />
-        <Footer />
+        <MyFooter />
     </div>
 
     <!-- Se usuário não estiver logado, carrega a home sem login -->
@@ -31,11 +31,11 @@ const userStore = useUserStore();
             </div>
             <div class="overlay"></div>
 
-            <Header />
+            <MyHeader />
             <FraseSection />
             <WeeklyMovies />
             <CommentSection />
-            <Footer />
+            <MyFooter />
         </div>
     </div>
 </template>

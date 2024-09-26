@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import HeaderLogged from '@/components/HeaderLogged.vue';
-import Header from '@/components/Header.vue';
-import Footer from '@/components/Footer.vue';
+import MyHeader from '@/components/Header.vue';
+import MyFooter from '@/components/Footer.vue';
 
 import { ref } from 'vue';
 import { api } from '@/api';
@@ -9,7 +9,7 @@ import { AxiosError } from 'axios';
 import type { Movie } from '@/types';
 import { useUserStore } from '@/stores/userStore';
 
-const movies = ref([] as Movie[])
+const movies = ref([] as Movie[]);
 const error_message = ref('');
 
 const userStore = useUserStore();
@@ -26,8 +26,21 @@ async function loadMovies() {
     }
 }
 
+function isValidUrl(poster: string) {
+  try {
+    const validUrl = new URL(poster);
+  } catch(error) {
+    return false;  
+  }
+
+  return true;
+}
+
 function loadPoster(movie: Movie) {
-    return movie.poster.imageUrl
+    if(isValidUrl(movie.poster.imageUrl))
+        return movie.poster.imageUrl
+    else
+        return "https://as1.ftcdn.net/v2/jpg/02/99/61/74/1000_F_299617487_fPJ8v9Onthhzwnp4ftILrtSGKs1JCrbh.jpg";
 }
 
 loadMovies()
@@ -57,7 +70,7 @@ loadMovies()
             </div>
         </div>
 
-        <Footer/>
+        <MyFooter/>
     </div>
 
     <div v-else>
@@ -67,7 +80,7 @@ loadMovies()
             </div>
             <div class="overlay"></div>
             
-            <Header />
+            <MyHeader />
 
             <div v-if="error_message !== ''" class="alert-danger" role="alert">
                 {{ error_message }}
@@ -89,7 +102,7 @@ loadMovies()
                 </div>
             </div>
 
-            <Footer/>
+            <MyFooter/>
         </div>
     </div>
 </template>
@@ -156,12 +169,8 @@ loadMovies()
 .movie-poster img {
     width: 100%;
     max-width: 200px;
+    max-height: 400px;
     border-radius: 10px;
-}
-
-.filme {
-    width: 146px;
-    height: 219px;
 }
 
 .button-container {

@@ -1,13 +1,12 @@
 <script setup lang="ts">
-import Header from '@/components/Header.vue';
-import Footer from '@/components/Footer.vue';
+import MyHeader from '@/components/Header.vue';
+import MyFooter from '@/components/Footer.vue';
 
-import { ref, onMounted } from 'vue'
+import { ref } from 'vue'
 import { api } from '@/api'
 import { AxiosError } from 'axios'
-import type { User, Role } from '@/types'
-import { useUserStore } from '@/stores/userStore'
-import { useRoute, useRouter } from 'vue-router'
+import type { User } from '@/types'
+import { useRouter } from 'vue-router'
 
 const user = ref({
     role: {
@@ -45,19 +44,10 @@ async function createUser() {
             password: user.value.password,
             role: "Usuário padrão",
             profile_picture_Url: ""
-        },
-        );
+        });
         user.value = res.data.dados;
 
         router.push('/login');
-
-
-        //console.log(user.value);
-
-        /*if(userStore.userData)
-            userStore.authenticaded(user.value, userStore.jwt);
-
-        userUpdated.value = true*/
 
     } catch(error) {
         if(error instanceof AxiosError)
@@ -76,7 +66,7 @@ async function createUser() {
         </div>
         <div class="overlay"></div>
 
-        <Header />
+        <MyHeader />
         
         <div class="registration-container">
             <div class="registration-box">
@@ -149,7 +139,7 @@ async function createUser() {
 
             </div>
 
-            <Footer />
+            <MyFooter />
 
         </div>
     </div>
