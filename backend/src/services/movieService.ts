@@ -22,8 +22,22 @@ export const movieService = {
     },
 
     create: async(movieData: Movie) => {
-        const existingMovie = await movieRepository.findOneBy({ title: movieData.title, });
-        if(existingMovie) throw new Error("Filme já existe.");
+        const missingFields = [];
+        if(movieData.title == null || movieData.title === '')                           missingFields.push("título");
+        if(movieData.releaseDate == null || movieData.releaseDate.toString() === '')    missingFields.push("ano de lançamento");
+        if(movieData.synopsis == null || movieData.synopsis === '')                     missingFields.push("sinopse");
+        if(movieData.poster == null || movieData.poster.toString() === '')              missingFields.push("pôster");
+        
+        if(missingFields.length > 0)
+            throw new Error("Preencha todos os campos de informação.");
+
+        const numberRegex = /^[+-]?\d+(\.\d+)?$/;
+        if(!numberRegex.test(movieData.releaseDate.toString()))
+            throw new Error("O ano de lançamento informado deve ser um valor numérico.");
+
+        const existingTitle = await movieRepository.findOneBy({ title: movieData.title, });
+        const existingReleaseDate = await movieRepository.findOneBy({ releaseDate: movieData.releaseDate });
+        if(existingTitle && existingReleaseDate) throw new Error("Filme já existe.");
 
         if(movieData.id != null && movieData.id.toString() !== '')
         throw new Error("O id do filme será gerado automaticamente e, portanto, não pode ser atribuido.");
@@ -51,6 +65,23 @@ export const movieService = {
             relations: { poster: true }
         });
         if(!movie) throw new Error("Filme não identificado.");
+
+        const missingFields = [];
+        if(movieData.title == null || movieData.title === '')                           missingFields.push("título");
+        if(movieData.releaseDate == null || movieData.releaseDate.toString() === '')    missingFields.push("ano de lançamento");
+        if(movieData.synopsis == null || movieData.synopsis === '')                     missingFields.push("sinopse");
+        if(movieData.poster == null || movieData.poster.toString() === '')              missingFields.push("pôster");
+        
+        if(missingFields.length > 0)
+            throw new Error("Preencha todos os campos de informação.");
+
+        const numberRegex = /^[+-]?\d+(\.\d+)?$/;
+        if(!numberRegex.test(movieData.releaseDate.toString()))
+            throw new Error("O ano de lançamento informado deve ser um valor numérico.");
+
+        const existingTitle = await movieRepository.findOneBy({ title: movieData.title, });
+        const existingReleaseDate = await movieRepository.findOneBy({ releaseDate: movieData.releaseDate });
+        if(existingTitle && existingReleaseDate) throw new Error("Filme já existe.");
 
         if(movieData.id != null && movieData.id != id)
             throw new Error("O id do filme não pode ser alterado.");

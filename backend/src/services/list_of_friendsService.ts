@@ -26,20 +26,29 @@ export const friendService = {
 
         const userToBeFriend = await userRepository.findOne({
             where: { id: friend_id },
+            relations: { friends: true }
         });
         if(!userToBeFriend) throw new Error("Usuário a ser adicionado como amigo não identificado.");
 
-        if(!user.friends)
-            user.friends = [];
+        if(!user.friends)           user.friends = [];
+        if(!userToBeFriend.friends) userToBeFriend.friends = [];
 
         const alreadyFriend = user.friends.some(f => f.id === userToBeFriend.id);
         if(alreadyFriend)
             throw new Error(`O usuário ${userToBeFriend.username} já está adicionado na sua lista de amigos.`);
 
         user.friends.push(userToBeFriend);
-        await userRepository.save(user);
+        userToBeFriend.friends.push(user);
 
-        return userToBeFriend;
+        await userRepository.save(user);
+        await userRepository.save(userToBeFriend);
+
+        const friend = {
+            id: userToBeFriend.id,
+            username: userToBeFriend.username,
+            email: userToBeFriend.email,
+        }
+        return friend;
     },
 
     remove: async(user_id: number, friend_id: number) => {
@@ -53,17 +62,28 @@ export const friendService = {
 
         const friendToBeRemoved = await userRepository.findOne({
             where: { id: friend_id },
+            relations: { friends: true }
         });
         if(!friendToBeRemoved) throw new Error("Amigo a ser removido não identificado.");
 
         const isFriend = user.friends.some(f => f.id === friendToBeRemoved.id);
         if(!isFriend)
             throw new Error(`O usuário ${friendToBeRemoved.username} não está adicionado na sua lista de amigos.`);
-        
-        const friend_index = user.friends.indexOf(friendToBeRemoved);
-        user.friends.splice(friend_index, 1);
-        await userRepository.save(user);
 
-        return friendToBeRemoved;
+        if(!user.friends)               user.friends = [];
+        if(!friendToBeRemoved.friends)  friendToBeRemoved.friends = [];
+        
+        user.friends = user.friends.filter(f => f.id !== friendToBeRemoved.id);
+        friendToBeRemoved.friends = friendToBeRemoved.friends.filter(u => u.id !== user.id);
+        
+        await userRepository.save(user);
+        await userRepository.save(friendToBeRemoved);
+
+        const removedFriend = {
+            id: friendToBeRemoved.id,
+            username: friendToBeRemoved.username,
+            email: friendToBeRemoved.email,
+        }
+        return removedFriend;
     },
 };

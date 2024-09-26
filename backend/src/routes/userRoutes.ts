@@ -90,9 +90,6 @@ userRouter.put('/:id', authenticateToken, authorizeUser, async(req, res) => {
             case "O id do usuário não pode ser alterado.":
                 res.status(401).json({ erro: getErrorResponse(401, "Não autorizado.", errorMessage) });
                 break;
-            /* case "Permissão negada.":
-                res.status(403).json({ erro: getErrorResponse(403, "Proibido.", errorMessage) });
-                break; */
             case "Usuário não identificado.":
                 res.status(404).json({ erro: getErrorResponse(404, "Não encontrado.", errorMessage) });
                 break;

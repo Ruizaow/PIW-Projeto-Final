@@ -1,4 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, Column, OneToOne, OneToMany, ManyToOne, JoinColumn } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, OneToOne, ManyToMany, JoinColumn } from 'typeorm';
 import { User } from './user';
 
 @Entity()
@@ -28,6 +28,6 @@ export class Movie {
   @JoinColumn()
   poster: Poster;
   
-  @ManyToOne(() => User, (user) => user.movies)
-  user: User;
+  @ManyToMany(() => User, (user) => user.movies)
+  users: User[];
 }

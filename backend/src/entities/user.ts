@@ -51,6 +51,17 @@ export class User {
     })
     friends: User[];
 
-    @OneToMany(() => Movie, (movie) => movie.user)
+    @ManyToMany(() => Movie, (movie) => movie.users)
+    @JoinTable({
+        name: 'user_movies',
+        joinColumn: {
+            name: 'user_id',
+            referencedColumnName: 'id'
+        },
+        inverseJoinColumn: {
+            name: 'movie_id',
+            referencedColumnName: 'id'
+        }
+    })
     movies: Movie[];
 }
