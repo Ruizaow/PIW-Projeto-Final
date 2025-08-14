@@ -52,8 +52,8 @@ Usuário não registrado poderá ver os filmes, as listas de filmes e listas de 
 Usuário registrado pode adicionar outros usuários registrados como amigo e criar uma lista própria de filmes.
 
 O adminstrador do site pode:
-- adicionar e remover usuários, além de editar suas informações: nome, nome de usuário, email, senha, papel de usuário e foto de perfil;
-- adicionar e remover os filmes disponíveis no site, além de editar suas informações: título, data de lançamento, sinopse e pôster.
+- Adicionar e remover usuários, além de editar suas informações: nome, nome de usuário, email, senha, papel de usuário e foto de perfil;
+- Adicionar e remover os filmes disponíveis no site, além de editar suas informações: título, data de lançamento, sinopse e pôster.
 
 ## Tecnologia e frameworks ultilizados
 ### Frontend:
